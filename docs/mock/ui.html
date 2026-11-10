@@ -1,0 +1,2309 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1440">
+    <title>かぞくAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+    <style>
+        :root {
+            /* 東京都カラーユニバーサルデザインガイドライン(推奨配色セット)を基準にした配色 */
+            --paper-base: #F5F5F5;
+            --paper-raised: #FFFFFF;
+            --paper-sunken: #E2E3E6;
+            --ink: #1A1A1A;
+            --ink-2: #4D5359;
+            --ink-3: #6E757C;
+            --line: #C8C8CB;
+            --line-strong: #7F878F;
+            --alert: #DC3800;
+            --ok: #35A16B;
+            --ok-soft: #D5F5E3;
+            --care: #FF9900;
+            --care-soft: #FFFF99;
+            --alert-soft: #FFE3E3;
+            --night: #1F2328;
+            --night-raised: #2D3238;
+            --night-line: #7F878F;
+            --night-text: #FFFFFF;
+            --night-text-2: #D0D3D8;
+            --radius: 8px;
+            --sans: "BIZ UDPGothic", sans-serif;
+            --num: "BIZ UDPGothic", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html,
+        body {
+            background: #E4DCCB
+        }
+
+        body {
+            width: 1440px;
+            font-family: var(--sans);
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased
+        }
+
+        button {
+            font: inherit;
+            color: inherit;
+            background: none;
+            border: 0;
+            cursor: pointer
+        }
+
+        svg {
+            display: block;
+            flex: none
+        }
+
+        .display {
+            font: 900 32px/42px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .title-l {
+            font: 700 24px/32px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .title-m {
+            font: 700 18px/26px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .label-l {
+            font: 700 16px/24px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .label-m {
+            font: 500 14px/20px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .label-s {
+            font: 500 12px/16px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .body-m {
+            font: 400 15px/24px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .body-s {
+            font: 400 13px/20px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .cap-l {
+            font: 700 26px/40px var(--sans);
+            letter-spacing: .04em
+        }
+
+        .cap-m {
+            font: 500 17px/28px var(--sans);
+            letter-spacing: .04em
+        }
+
+        .cap-s {
+            font: 500 14px/22px var(--sans);
+            letter-spacing: .03em
+        }
+
+        .mono-l {
+            font: 400 52px/56px var(--num);
+            letter-spacing: -.02em
+        }
+
+        .mono-m {
+            font: 500 14px/18px var(--num)
+        }
+
+        .mono-s {
+            font: 400 12px/16px var(--num)
+        }
+
+        .muted {
+            color: var(--ink-2)
+        }
+
+        .nmuted {
+            color: var(--night-text-2)
+        }
+
+        /* Board */
+        .board {
+            width: 1440px;
+            padding: 72px 64px 96px;
+            display: flex;
+            flex-direction: column;
+            gap: 96px
+        }
+
+        .intro {
+            display: flex;
+            justify-content: space-between;
+            gap: 64px;
+            align-items: flex-start
+        }
+
+        .intro-main {
+            width: 560px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .principles {
+            display: flex;
+            gap: 32px;
+            flex: 1
+        }
+
+        .principle {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-top: 2px solid var(--ink);
+            padding-top: 12px
+        }
+
+        .flow {
+            display: flex;
+            flex-direction: column;
+            gap: 32px
+        }
+
+        .flow-head {
+            display: flex;
+            align-items: baseline;
+            gap: 16px
+        }
+
+        .row {
+            display: flex;
+            gap: 64px;
+            align-items: flex-start
+        }
+
+        .cell {
+            width: 393px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px
+        }
+
+        .cell-title {
+            display: flex;
+            gap: 10px;
+            align-items: baseline
+        }
+
+        .note {
+            color: var(--ink-2)
+        }
+
+        .why {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .why dl {
+            display: grid;
+            grid-template-columns: 64px 1fr;
+            gap: 6px 8px;
+            border-top: 1px solid var(--line-strong);
+            padding-top: 10px
+        }
+
+        .why dt {
+            font: 700 12px/20px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .why dd {
+            font: 400 13px/20px var(--sans);
+            letter-spacing: .02em;
+            color: var(--ink-2)
+        }
+
+        /* Alignment with the contest */
+        .brief {
+            display: flex;
+            flex-direction: column;
+            gap: 32px
+        }
+
+        .brief-grid {
+            display: grid;
+            grid-template-columns: 393px 1fr;
+            gap: 64px;
+            align-items: start
+        }
+
+        .brief-side {
+            display: flex;
+            flex-direction: column;
+            gap: 24px
+        }
+
+        .theme {
+            padding: 24px;
+            border-radius: 24px;
+            background: var(--night);
+            color: var(--night-text);
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .fact {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-top: 2px solid var(--ink);
+            padding-top: 12px
+        }
+
+        .crit {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        .crit th {
+            font: 700 12px/16px var(--sans);
+            letter-spacing: .02em;
+            text-align: left;
+            color: var(--ink-2);
+            padding: 0 16px 8px 0;
+            border-bottom: 2px solid var(--ink)
+        }
+
+        .crit td {
+            padding: 10px 16px 10px 0;
+            border-bottom: 1px solid var(--line-strong);
+            vertical-align: top;
+            font: 400 13px/20px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .crit td:first-child {
+            width: 262px;
+            color: var(--ink-2)
+        }
+
+        .crit td:last-child {
+            width: 108px;
+            padding-right: 0;
+            font: 400 12px/20px var(--num)
+        }
+
+        .crit .group td {
+            padding-top: 20px;
+            font: 700 14px/20px var(--sans);
+            color: var(--ink);
+            border-bottom: 0;
+            padding-bottom: 0
+        }
+
+        .tri {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px
+        }
+
+        .tri ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px
+        }
+
+        .tri li {
+            font: 400 13px/20px var(--sans);
+            letter-spacing: .02em;
+            color: var(--ink-2);
+            padding-left: 1em;
+            text-indent: -1em
+        }
+
+        .tri li::before {
+            content: "・"
+        }
+
+        /* Screen */
+        .screen {
+            width: 393px;
+            height: 852px;
+            position: relative;
+            overflow: hidden;
+            background: var(--paper-base);
+            flex: none
+        }
+
+        .screen.night {
+            background: var(--night);
+            color: var(--night-text)
+        }
+
+        .status {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 393px;
+            height: 54px;
+            padding: 20px 24px 8px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font: 600 16px/20px var(--sans);
+            z-index: 5
+        }
+
+        .homebar {
+            height: 34px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 8px;
+            flex: none
+        }
+
+        .homebar i {
+            display: block;
+            width: 134px;
+            height: 5px;
+            border-radius: 3px;
+            background: currentColor
+        }
+
+        .content {
+            position: absolute;
+            left: 0;
+            top: 54px;
+            width: 393px;
+            display: flex;
+            flex-direction: column
+        }
+
+        .foot {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 393px;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px
+        }
+
+        /* Atoms */
+        .avatar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            color: #fff;
+            flex: none
+        }
+
+        .avatar.S {
+            width: 24px;
+            height: 24px;
+            font: 500 12px/16px var(--sans)
+        }
+
+        .avatar.M {
+            width: 36px;
+            height: 36px;
+            font: 700 16px/24px var(--sans)
+        }
+
+        .iconbtn {
+            width: 44px;
+            height: 44px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: none
+        }
+
+        .iconbtn.tinted {
+            background: var(--paper-sunken)
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: var(--radius);
+            flex: none
+        }
+
+        .btn.L {
+            height: 56px;
+            padding: 0 24px;
+            font: 700 16px/24px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .btn.M {
+            height: 44px;
+            padding: 0 16px;
+            font: 500 14px/20px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .btn.primary {
+            background: var(--ink);
+            color: var(--paper-raised)
+        }
+
+        .btn.primary:disabled {
+            background: #D5D6D9;
+            color: var(--ink-2);
+            cursor: not-allowed
+        }
+
+        .btn.secondary {
+            background: var(--paper-raised);
+            color: var(--ink);
+            border: 1.5px solid var(--line-strong)
+        }
+
+        .btn.secondary:disabled {
+            background: #D5D6D9;
+            color: var(--ink-2);
+            cursor: not-allowed
+        }
+
+        .agreebox {
+            width: 44px;
+            height: 56px;
+            margin-left: -10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: none
+        }
+
+        .agreebox i {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 1.5px solid var(--line-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .agreebox svg {
+            display: none
+        }
+
+        .agreebox[aria-checked="true"] i {
+            background: var(--ink);
+            border-color: var(--ink)
+        }
+
+        .agreebox[aria-checked="true"] svg {
+            display: block
+        }
+
+        .agreebox:disabled {
+            cursor: not-allowed
+        }
+
+        .agreebox:disabled i {
+            background: var(--paper-sunken)
+        }
+
+        .btn.ghost {
+            color: var(--ink-2)
+        }
+
+        .btn.ghost-night {
+            color: var(--night-text)
+        }
+
+        .link {
+            text-decoration: underline;
+            text-underline-offset: 3px
+        }
+
+        .btn.light {
+            background: var(--night-text);
+            color: var(--night)
+        }
+
+        .fillw {
+            width: 100%
+        }
+
+        .field {
+            min-height: 56px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            border-radius: var(--radius);
+            background: var(--paper-raised);
+            border: 1.5px solid var(--line-strong)
+        }
+
+        .field[hidden] {
+            display: none
+        }
+
+        .topic-x {
+            display: none;
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            width: 20px;
+            height: 20px;
+            align-items: center;
+            justify-content: center
+        }
+
+        .field:not(:only-child)>.topic-x {
+            display: flex
+        }
+
+        .field input[data-topic-input] {
+            font: 500 14px/20px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .field input::placeholder {
+            color: var(--ink-2);
+            opacity: 1
+        }
+
+        .field input {
+            width: 100%;
+            min-width: 0;
+            border: 0;
+            outline: 0;
+            background: none;
+            font: 500 16px/24px var(--num);
+            color: var(--ink)
+        }
+
+        .field.focus {
+            border: 2px solid var(--ink)
+        }
+
+        .chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .chip-hit {
+            padding: 4px 0;
+            flex: none
+        }
+
+        .chip {
+            height: 36px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: var(--radius);
+            background: var(--paper-raised);
+            border: 1px solid var(--line-strong);
+            font: 500 14px/20px var(--sans);
+            letter-spacing: .02em;
+            white-space: nowrap
+        }
+
+        .chip.sel {
+            background: var(--ink);
+            color: var(--paper-raised);
+            border-color: var(--ink)
+        }
+
+        .dockact {
+            height: 56px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            align-items: center;
+            justify-content: center;
+            font: 500 12px/16px var(--sans);
+            letter-spacing: .02em;
+            color: var(--ink-2)
+        }
+
+        .dockact.on {
+            color: var(--ink);
+            font-weight: 700
+        }
+
+        .dockact.on::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            top: -1px;
+            height: 3px;
+            background: var(--ink)
+        }
+
+        .dock {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr)
+        }
+
+        .tabbar {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 393px;
+            background: var(--paper-raised);
+            border-top: 1px solid var(--line-strong);
+            display: flex;
+            flex-direction: column;
+            z-index: 4
+        }
+
+        .sheet {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 393px;
+            background: var(--paper-raised);
+            border-radius: var(--radius) var(--radius) 0 0;
+            box-shadow: 0 -6px 24px rgba(0, 0, 0, .18);
+            display: flex;
+            flex-direction: column;
+            z-index: 4
+        }
+
+        .card {
+            padding: 16px;
+            border-radius: var(--radius);
+            background: var(--paper-raised);
+            border: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .nightcard {
+            padding: 20px;
+            border-radius: var(--radius);
+            background: var(--night);
+            color: var(--night-text);
+            display: flex;
+            flex-direction: column
+        }
+
+        .ai-tag {
+            display: flex;
+            gap: 6px;
+            align-items: center
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .step {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start
+        }
+
+        .step b {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--ink);
+            color: var(--paper-raised);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font: 700 14px/20px var(--sans);
+            flex: none
+        }
+
+        .illus {
+            border-radius: var(--radius);
+            background: var(--paper-sunken);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px
+        }
+
+        .prog {
+            display: flex;
+            gap: 6px
+        }
+
+        .prog i {
+            display: block;
+            height: 4px;
+            flex: 1;
+            border-radius: 2px;
+            background: var(--line-strong)
+        }
+
+        .prog i.on {
+            background: var(--ink)
+        }
+
+        /* Home */
+        .hhead {
+            position: absolute;
+            left: 0;
+            top: 54px;
+            width: 393px;
+            height: 60px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--paper-base);
+            z-index: 3
+        }
+
+        .hview {
+            position: absolute;
+            left: 0;
+            top: 114px;
+            width: 393px;
+            height: 738px;
+            overflow: hidden
+        }
+
+        .hcol {
+            position: absolute;
+            left: 16px;
+            width: 361px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 12px
+        }
+
+        .state {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding-top: 12px;
+            border-top: 1px solid var(--line)
+        }
+
+        .state:first-of-type {
+            border-top: 0;
+            padding-top: 0
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            height: 24px;
+            padding: 0 8px;
+            border-radius: var(--radius);
+            font: 700 12px/16px var(--sans);
+            letter-spacing: .02em;
+            flex: none;
+            color: var(--ink);
+            border: 1px solid var(--ink-2)
+        }
+
+        .pill.care {
+            background: var(--care-soft)
+        }
+
+        .pill.ok {
+            background: var(--ok-soft)
+        }
+
+        .pill.alert {
+            background: var(--alert-soft)
+        }
+
+        /* Timeline */
+        .tl-day {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 8px 16px
+        }
+
+        .tl-row {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px
+        }
+
+        .tl-time {
+            width: 40px;
+            flex: none;
+            padding-top: 14px;
+            color: var(--ink-2)
+        }
+
+        .tl-rail {
+            width: 24px;
+            flex: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px
+        }
+
+        .tl-rail i {
+            display: block;
+            width: 2px;
+            flex: 1;
+            background: var(--line-strong);
+            margin-top: 4px;
+            opacity: .5
+        }
+
+        .tl-card {
+            flex: 1;
+            min-width: 0;
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: var(--radius);
+            background: var(--paper-raised);
+            border: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            gap: 4px
+        }
+
+        .tl-card.miss {
+            background: var(--alert-soft);
+            border: 2px solid var(--alert)
+        }
+
+        /* Calendar */
+        .mini {
+            margin: 0 16px 4px;
+            width: 361px;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: var(--radius);
+            background: var(--paper-raised);
+            border: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: left
+        }
+
+        .mini-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 8px;
+            height: 24px
+        }
+
+        .mini-days {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: calc(100%/7);
+            overflow-x: auto;
+            scrollbar-width: none;
+            scroll-snap-type: x mandatory
+        }
+
+        .mini-day {
+            scroll-snap-align: start
+        }
+
+        .mini-days::-webkit-scrollbar {
+            display: none
+        }
+
+        .mini-day {
+            height: 60px;
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px
+        }
+
+        .mini-day.sel {
+            background: var(--ink);
+            color: var(--paper-raised)
+        }
+
+        .mark {
+            height: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .mark i {
+            display: block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--line-strong)
+        }
+
+        .mini-day.sel .mark i {
+            background: var(--paper-raised)
+        }
+
+        .scrim {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 393px;
+            height: 852px;
+            background: rgba(0, 0, 0, .5);
+            z-index: 3
+        }
+
+        .grip {
+            height: 20px;
+            padding-top: 8px;
+            display: flex;
+            justify-content: center;
+            flex: none
+        }
+
+        .grip i {
+            display: block;
+            width: 40px;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--line-strong)
+        }
+
+        .cal {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            row-gap: 2px
+        }
+
+        .cal-w {
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-2)
+        }
+
+        .cal-d {
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px
+        }
+
+        .cal-d b {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font: 500 14px/18px var(--num)
+        }
+
+        .cal-d.sel b {
+            background: var(--ink);
+            color: var(--paper-raised)
+        }
+
+        .cal-d.today b {
+            box-shadow: inset 0 0 0 1.5px var(--ink)
+        }
+
+        .cal-d.future b {
+            color: var(--ink-3);
+            font-weight: 400
+        }
+
+        /* T1〜T3: はじめてのチュートリアル */
+        .tut {
+            position: absolute;
+            inset: 0;
+            z-index: 6
+        }
+
+        .tut-spot {
+            position: absolute;
+            border-radius: 14px;
+            box-shadow: 0 0 0 2000px rgba(0, 0, 0, .62);
+            outline: 2px solid #FFFFFF;
+            pointer-events: none
+        }
+
+        .tut-tip {
+            position: absolute;
+            left: 16px;
+            width: 361px;
+            padding: 16px;
+            border-radius: var(--radius);
+            background: var(--paper-raised);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .25)
+        }
+
+        .tut:not(.placed) .tut-tip,
+        .tut:not(.placed) .tut-spot {
+            visibility: hidden
+        }
+
+        /* 01b: 予約の日時を選ぶ */
+        .cal.book .cal-d {
+            height: 40px
+        }
+
+        .cal-d.past b {
+            color: var(--line-strong);
+            font-weight: 400
+        }
+
+        .cal-d.past {
+            cursor: default
+        }
+
+        .wheel {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            height: 180px;
+            border-radius: var(--radius);
+            background: var(--paper-base)
+        }
+
+        .wheel-band {
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            top: 72px;
+            height: 36px;
+            border-radius: var(--radius);
+            background: var(--paper-sunken);
+            pointer-events: none
+        }
+
+        .wheel-col {
+            position: relative;
+            width: 88px;
+            height: 180px;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+            padding: 72px 0;
+            -webkit-mask-image: linear-gradient(transparent, #000 35%, #000 65%, transparent);
+            mask-image: linear-gradient(transparent, #000 35%, #000 65%, transparent)
+        }
+
+        .wheel-col::-webkit-scrollbar {
+            display: none
+        }
+
+        .wheel-col button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 36px;
+            scroll-snap-align: center;
+            font: 400 22px/28px var(--num);
+            color: var(--ink-3)
+        }
+
+        .wheel-col button.on {
+            font-weight: 700;
+            font-size: 26px;
+            color: var(--ink)
+        }
+
+        .wheel-colon {
+            position: relative;
+            font: 700 26px/28px var(--num)
+        }
+
+        .quick {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .quick .chip {
+            height: 32px;
+            padding: 0 12px;
+            font-family: var(--num)
+        }
+
+        .often-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ok)
+        }
+
+        /* Log */
+        .log {
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .say {
+            display: grid;
+            grid-template-columns: 40px 1fr;
+            gap: 8px
+        }
+
+        .say .t {
+            padding-top: 2px;
+            color: var(--ink-2)
+        }
+
+        .say .who {
+            font: 700 12px/16px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .say.flag .who {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .say.flag .txt {
+            background: var(--care-soft);
+            border: 1px solid var(--ink-2);
+            border-radius: 8px;
+            padding: 4px 8px;
+            margin: 2px 0 0 -8px
+        }
+
+        [data-retry] .chip {
+            padding: 0 12px
+        }
+
+        /* Setup */
+        .topic-scroll {
+            overflow-y: auto;
+            scrollbar-gutter: stable
+        }
+
+        .topic-scroll::-webkit-scrollbar {
+            width: 4px
+        }
+
+        .topic-scroll::-webkit-scrollbar-thumb {
+            background: var(--line-strong);
+            border-radius: 2px
+        }
+
+        @supports not selector(::-webkit-scrollbar) {
+            .topic-scroll {
+                scrollbar-width: thin;
+                padding-right: 4px !important
+            }
+        }
+
+        .topics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px
+        }
+
+        .topic {
+            height: 64px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: var(--radius);
+            background: var(--paper-raised);
+            border: 1px solid var(--line-strong);
+            font: 700 14px/20px var(--sans);
+            letter-spacing: .02em
+        }
+
+        .topic svg {
+            position: absolute;
+            right: 6px;
+            top: 6px;
+            display: none
+        }
+
+        .topic[aria-pressed="true"] {
+            background: var(--ink);
+            color: var(--paper-raised);
+            border-color: var(--ink)
+        }
+
+        .topic[aria-pressed="true"] svg {
+            display: block
+        }
+
+        .voice {
+            flex-direction: row;
+            align-items: center;
+            padding: 10px 8px 10px 12px;
+            cursor: pointer
+        }
+
+        .voice[aria-checked="true"] {
+            border: 2px solid var(--ink);
+            padding: 9px 7px 9px 11px
+        }
+
+        .voice .radio {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1.5px solid var(--line-strong);
+            flex: none
+        }
+
+        .voice[aria-checked="true"] .radio {
+            border: 7px solid var(--ink)
+        }
+
+        .setrow {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            width: 100%;
+            min-height: 60px;
+            text-align: left;
+            border-top: 1px solid var(--line)
+        }
+
+        .setrow:first-child {
+            border-top: 0
+        }
+
+        .cell.flash .screen {
+            animation: flash 1.4s ease-out
+        }
+
+        @keyframes flash {
+
+            0%,
+            50% {
+                outline: 4px solid var(--ink);
+                outline-offset: 4px
+            }
+
+            100% {
+                outline: 4px solid transparent;
+                outline-offset: 4px
+            }
+        }
+
+        /* Foundations */
+        .found {
+            display: flex;
+            flex-direction: column;
+            gap: 32px
+        }
+
+        .found-grid {
+            display: flex;
+            gap: 64px;
+            align-items: flex-start
+        }
+
+        .swatches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            width: 760px
+        }
+
+        .swatch {
+            width: 112px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .swatch i {
+            display: block;
+            height: 64px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, .25)
+        }
+
+        .spec {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px
+        }
+
+        .spec>div {
+            display: flex;
+            flex-direction: column;
+            gap: 4px
+        }
+
+        /* 認証コードの入力(L3k) */
+        .code {
+            display: flex;
+            gap: 8px
+        }
+
+        .code i {
+            flex: 1;
+            height: 60px;
+            border-radius: var(--radius);
+            background: var(--paper-raised);
+            border: 1.5px solid var(--line-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font: 700 28px/36px var(--num);
+            font-style: normal;
+            color: var(--ink)
+        }
+
+        .code i.cur {
+            border: 2px solid var(--ink)
+        }
+
+        .code.err i {
+            border: 2px solid var(--alert);
+            background: var(--alert-soft)
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding-bottom: 4px
+        }
+
+        .keypad button {
+            height: 48px;
+            border-radius: 12px;
+            background: var(--paper-raised);
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font: 500 24px/32px var(--num);
+            color: var(--ink)
+        }
+
+        .keypad button:active {
+            background: var(--paper-sunken)
+        }
+
+        .keypad button.blank {
+            visibility: hidden
+        }
+    </style>
+</head>
+
+<body>
+    <main class="board" id="board"></main>
+    <script>
+        const INK = '#1A1A1A', INK2 = '#4D5359', RAISED = '#FFFFFF', SUNKEN = '#E2E3E6', ALERT = '#DC3800', OK = '#35A16B', CARE = '#FF9900', NIGHT = '#1F2328', NLINE = '#7F878F', NTEXT = '#FFFFFF', NTEXT2 = '#D0D3D8', NRAISED = '#2D3238', AI_C = '#0041FF', HANA = '#663300', GREY = '#7F878F';
+        const PHONE = '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>';
+        const IC = {
+            phone: PHONE,
+            'phone-missed': PHONE + '<line x1="22" x2="16" y1="2" y2="8"/><line x1="16" x2="22" y1="2" y2="8"/>',
+            home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+            list: '<path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/>',
+            'calendar-clock': '<path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h5"/><path d="M17.5 17.5 16 16.3V14"/><circle cx="16" cy="16" r="6"/>',
+            utensils: '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
+            moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+            heart: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/>',
+            alert: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+            rotate: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+            bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+            lock: '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+            square: '<rect width="18" height="18" x="3" y="3" rx="2"/>',
+            play: '<polygon points="6 3 20 12 6 21 6 3"/>',
+            plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
+            x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+            'chevron-left': '<path d="m15 18-6-6 6-6"/>',
+            'chevron-right': '<path d="m9 18 6-6-6-6"/>',
+            'chevron-down': '<path d="m6 9 6 6 6-6"/>',
+            'qr-code': '<rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/>',
+            flashlight: '<path d="M18 6c0 2-2 2-2 4v10a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V10c0-2-2-2-2-4V2h12z"/><line x1="6" x2="18" y1="6" y2="6"/><line x1="12" x2="12" y1="12" y2="12"/>',
+            'log-out':'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>',
+            sparkles: '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/>',
+            check: '<path d="M20 6 9 17l-5-5"/>',
+            pencil: '<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
+            eye: '<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>',
+            settings: '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+            delete: '<path d="M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/><path d="m12 9 6 6"/><path d="m18 9-6 6"/>',
+            clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+            mail: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+        };
+        const FILLED = new Set(['square', 'play']);
+        const icon = (k, s = 24, c = INK) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${FILLED.has(k) ? c : 'none'}" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
+
+        const rng = seed => { let s = seed % 2147483647; if (s <= 0) s += 2147483646; return () => { s = s * 16807 % 2147483647; return (s - 1) / 2147483646 } };
+        const bars = (seed, n, H, min = 3) => { const r = rng(seed * 7919 + 13); let v = .5; const out = []; for (let i = 0; i < n; i++) { v = v * .5 + r() * .5; const env = .5 + .5 * Math.abs(Math.sin(i / n * Math.PI * (1 + seed % 3) + seed)); out.push(Math.max(min, Math.min(H, Math.pow(v * env * 1.5, 1.1) * H))) } return out };
+        const wavePath = (hs, x0, H, w, g) => hs.map((h, i) => { const x = x0 + i * (w + g), y = (H - h) / 2, r = w / 2; return `M${x.toFixed(2)} ${(y + r).toFixed(2)}a${r} ${r} 0 0 1 ${w} 0v${(h - w).toFixed(2)}a${r} ${r} 0 0 1 ${-w} 0z` }).join('');
+        const wave = (seed, W, H, c) => { const w = 3, g = 2, n = Math.floor((W + g) / (w + g)); return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true"><path fill="${c}" d="${wavePath(bars(seed, n, H), 0, H, w, g)}"/></svg>` };
+
+        const status = (t, night) => `<div class="status" style="color:${night ? NTEXT : INK}"><span>${t}</span><svg width="68" height="13" viewBox="0 0 68 13" fill="${night ? NTEXT : INK}" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="6" width="3" height="6" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y=".5" width="3" height="11.5" rx="1"/><path d="M31 12l-2.4-3a3.6 3.6 0 0 1 4.8 0L31 12zM25.8 5.6l1.6 1.9a5.6 5.6 0 0 1 7.2 0l1.6-1.9a8.2 8.2 0 0 0-10.4 0zM23 2.4l1.7 1.9a10 10 0 0 1 12.6 0L39 2.4a12.6 12.6 0 0 0-16 0z"/><rect x="44" y="1" width="21" height="11" rx="3" fill="none" stroke="${night ? NTEXT : INK}" stroke-opacity=".4"/><rect x="46" y="3" width="17" height="7" rx="1.5"/></svg></div>`;
+        const homebar = () => `<div class="homebar"><i></i></div>`;
+        // data-go: 押したときに移る画面(ボード上の該当画面へスクロールする)
+        const to = n => ` data-go="${n}"`;
+        const navBar = (ic, label, title = '', go = '') => `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 16px"><button class="iconbtn" aria-label="${label}"${go ? to(go) : ''}>${icon(ic)}</button><span class="title-m">${title}</span><span style="width:44px"></span></div>`;
+        const aiTag = (t = 'AIのまとめ', c = INK2, cls = 'muted') => `<div class="ai-tag">${icon('sparkles', 16, c)}<span class="label-s ${cls}">${t}</span></div>`;
+        const tabs = on => `<div class="tabbar"><div class="dock">${[['home', 'ホーム', 'home', '00'], ['calls', '通話記録', 'list', '04'], ['book', '予約電話', 'calendar-clock', '06']].map(([k, l, ic, go]) => `<button class="dockact ${on === k ? 'on' : ''}"${on === k ? ' aria-current="page"' : ''}${to(go)}>${icon(ic, 24, on === k ? INK : INK2)}<span>${l}</span></button>`).join('')}</div>${homebar()}</div>`;
+        const prog = (n, all) => `<div class="prog" aria-label="${all}段階のうち${n}段階目">${Array.from({ length: all }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</div>`;
+
+        // 固定電話のイラスト。lamp: off / on / ok / fail
+        // phone.png をSVGで描き起こしたもの。右上の小窓がランプ。ring: trueで、同期に使う「＃」ボタンを赤い点線で示す
+        const device = (lamp = 'off', h = 208, ring = true) => {
+            const L = { off: ['#F3EFE6', 0], on: ['#FAF500', 1], ok: [OK, 1], fail: [GREY, 0] }[lamp];
+            const keyAt = [[911, 645], [1180, 645], [1450, 645], [911, 886], [1180, 886], [1450, 886], [911, 1126], [1180, 1126], [1450, 1126], [911, 1366], [1180, 1366], [1450, 1366]];
+            const glyphs = `<path d="M888 618 914 590V705"/>
+ <path d="M1150 618C1160 585 1215 580 1215 630 1215 650 1190 675 1146 705H1220"/>
+ <path d="M1420 605C1440 578 1480 590 1478 620 1477 640 1460 645 1450 648 1480 650 1488 675 1480 690 1465 715 1430 712 1418 688"/>
+ <path d="M930 825 870 910H953M930 825 928 945"/>
+ <path d="M1210 825H1155L1148 880C1170 860 1215 870 1215 905 1215 950 1165 955 1148 925"/>
+ <path d="M1475 825C1440 830 1418 870 1418 910 1418 965 1482 955 1482 905 1482 860 1425 865 1418 905"/>
+ <path d="M873 1068H948L903 1186"/>
+ <ellipse cx="1180" cy="1095" rx="28" ry="32"/><ellipse cx="1180" cy="1158" rx="33" ry="32"/>
+ <path d="M1482 1100C1482 1050 1418 1055 1418 1100 1418 1145 1475 1145 1482 1105 1485 1150 1460 1185 1425 1186"/>
+ <path d="M911 1305V1425M865 1335 958 1394M958 1335 865 1394"/>
+ <rect x="1146" y="1305" width="70" height="122" rx="35"/>
+ <path d="M1437 1305 1425 1425M1472 1305 1462 1425M1402 1345H1498M1400 1388H1494"/>`;
+            return `<svg width="${Math.round(h * 1465 / 1675)}" height="${h}" viewBox="235 125 1465 1675" fill="none" stroke-linecap="round" stroke-linejoin="round" style="overflow:visible" aria-hidden="true">
+ <path d="M352 158H1550C1630 158 1672 205 1672 285 1672 600 1682 1000 1684 1650 1684 1740 1650 1780 1570 1782L355 1785C285 1785 252 1745 252 1670 252 1300 268 900 268 250 268 190 295 158 352 158Z" fill="#E2DBCD" stroke="${INK}" stroke-width="12"/>
+ <path d="M535 140C670 140 770 270 770 480 770 620 748 780 748 930 748 1100 776 1250 776 1440 776 1640 690 1750 535 1750 385 1750 292 1640 292 1430 292 1270 322 1100 322 930 322 770 296 620 296 470 296 270 390 140 535 140Z" fill="#F3EFE6" stroke="${INK}" stroke-width="12"/>
+ <g stroke="${INK}" stroke-width="10"><path d="M453 222C510 205 555 195 612 224"/><path d="M453 1686C510 1700 555 1710 612 1686"/></g>
+ ${L[1] ? `<rect x="1336" y="302" width="244" height="126" rx="56" fill="${L[0]}" fill-opacity=".55"/>` : ''}
+ <rect x="1371" y="337" width="174" height="56" rx="24" fill="${L[0]}" stroke="${INK}" stroke-width="10"/>
+ <g stroke="${INK}" stroke-width="9"><path d="M1411 352V378M1457 352V378M1504 352V378"/></g>
+ <g fill="#FFFFFF" stroke="${INK}" stroke-width="11">${keyAt.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="107"/>`).join('')}</g>
+ <g stroke="${INK}" stroke-width="13">${glyphs}</g>
+ <g fill="#2A2420" stroke="${INK}" stroke-width="10"><ellipse cx="856" cy="1587" rx="50" ry="33"/><ellipse cx="1035" cy="1587" rx="50" ry="33"/></g>
+ <g fill="#FFFFFF" stroke="${INK}" stroke-width="10"><ellipse cx="1233" cy="1587" rx="73" ry="45"/><ellipse cx="1472" cy="1587" rx="81" ry="45"/></g>
+ <g stroke="${INK}" stroke-width="8"><path d="M1222 1578V1563H1256V1597H1243"/><rect x="1209" y="1578" width="34" height="34" rx="4"/><path d="M1440 1572H1458L1478 1555V1612L1458 1595H1440ZM1488 1570 1499 1587 1488 1604"/></g>
+ ${ring ? `<circle cx="1450" cy="1366" r="150" stroke="${ALERT}" stroke-width="18" stroke-dasharray="40 40"/>
+ <path d="M1600 1366H1730" stroke="${ALERT}" stroke-width="12"/>` : ''}
+ </svg>`};
+        const illus = (lamp, mark, ring) => `<div class="illus" style="position:relative;padding-top:52px">${device(lamp, 208, ring)}${mark || ''}</div>`;
+
+        // ---------- 1. Before login ----------
+        const S = {};
+        const LOGO_GOOGLE = `<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>`;
+        const welcomeLine = (ic, t) => `<div style="display:flex;gap:12px;align-items:center"><span class="iconbtn" style="width:36px;height:36px;background:#B4EBFA">${icon(ic, 18, INK)}</span><span class="label-m">${t}</span></div>`;
+        const kazokuLogo = h => `<svg width="${h * 3078 / 1014}" height="${h}" style="display:block;flex:none" viewBox="620 1447 3078 1014" role="img" aria-label="かぞくAI"><g fill="#808080" stroke="#000" stroke-width="28" stroke-linejoin="round" paint-order="stroke"><path d="M796 1830L889 1840L866 1930L964 1927C1025 1925 1058 1975 1058 2040L1060 2250C1061 2345 1030 2398 957 2398H840L825 2299L952 2297L944 2020L841 2027L750 2398L643 2365L733 2043L640 2054V1950L764 1935Z"/><path d="M1077 1946L1177 1930C1190 1985 1200 2020 1205 2054L1219 2223L1114 2237L1098 2061C1093 2030 1085 1990 1077 1946Z"/><path d="M1440 1830L1570 1924L1494 1988L1364 1884Z"/><path d="M1327 2068L1473 2047L1633 1927L1741 1850L1748 1841L1809 1823L1878 1809L1921 1913L1863 1931L1797 1953L1654 2034L1883 2025L1890 2113C1810 2116 1745 2120 1698 2127C1640 2136 1600 2160 1570 2182C1540 2204 1525 2228 1525 2250C1527 2285 1560 2305 1600 2305C1660 2305 1765 2275 1831 2253L1865 2352C1790 2374 1700 2399 1590 2399C1500 2399 1445 2385 1420 2345C1405 2320 1398 2295 1406 2265C1412 2225 1435 2190 1464 2156L1341 2178Z"/></g><path d="M1744 1842L1797 1953M1816 1820L1862 1933" fill="none" stroke="#000" stroke-width="12"/><path fill="#808080" stroke="#000" stroke-width="28" stroke-linejoin="round" paint-order="stroke" d="M2447 1820L2529 1894L2167 2110L2536 2335L2449 2403L2136 2211C2090 2180 2040 2150 2040 2108C2040 2065 2085 2025 2121 2004Z"/><path fill="#E55B64" d="M2910 1659C2860 1705 2790 1790 2726 1900C2660 2015 2604 2135 2604 2245C2604 2360 2670 2455 2767 2455C2830 2455 2880 2415 2910 2354C2940 2415 2990 2455 3053 2455C3150 2455 3216 2360 3216 2245C3216 2135 3160 2015 3094 1900C3030 1790 2960 1705 2910 1659Z"/><path fill="#FFE6E8" d="M2910 1759C2870 1802 2830 1860 2784 1929C2730 2020 2672 2150 2672 2245C2672 2320 2710 2380 2767 2380C2815 2380 2855 2335 2874 2262H2946C2965 2335 3005 2380 3053 2380C3110 2380 3148 2320 3148 2245C3148 2150 3090 2020 3036 1929C2990 1860 2950 1802 2910 1759Z"/><g fill="none" stroke="#946949" stroke-width="33" stroke-linecap="round"><path d="M2891 2001V2030M2994 2001L2995 2030"/><path d="M2891 2113C2905 2125 2925 2135 2942 2135C2960 2135 2980 2125 2994 2113"/></g><g transform="translate(3436.5 1452) scale(1.02) translate(-3320 -1613)"><path fill="#FF2A35" d="M3320 1639C3305 1622 3285 1613 3262 1613C3225 1613 3198 1640 3198 1674C3198 1724 3266 1794 3320 1837C3374 1794 3442 1724 3442 1674C3442 1640 3415 1613 3378 1613C3355 1613 3335 1622 3320 1639Z"/><path fill="#FFE6E8" d="M3305 1669C3295 1650 3282 1638 3263 1638C3243 1638 3228 1653 3228 1674C3228 1710 3275 1760 3320 1804C3365 1760 3412 1710 3412 1674C3412 1653 3397 1638 3377 1638C3358 1638 3345 1650 3336 1669Z"/></g><g fill="none" stroke="#696969" stroke-width="23" stroke-linecap="round"><path d="M3534 1743C3555 1750 3580 1790 3579 1814"/><path d="M3561 1709C3595 1730 3630 1775 3624 1819"/><path d="M3581 1671C3640 1695 3682 1760 3679 1829"/></g><path fill="#696969" d="M3410 1704C3425 1703 3440 1704 3449 1708C3462 1716 3478 1733 3492 1751C3507 1770 3520 1791 3531 1812C3543 1835 3552 1858 3558 1882C3564 1905 3568 1928 3568 1952C3569 1976 3569 2000 3566 2022C3562 2050 3556 2076 3548 2100C3539 2128 3528 2152 3515 2174C3507 2187 3500 2198 3492 2206C3482 2215 3472 2223 3460 2229C3440 2239 3420 2246 3398 2248C3382 2249 3367 2248 3355 2244C3342 2240 3334 2235 3334 2225C3333 2212 3334 2199 3336 2186C3340 2165 3346 2146 3353 2127C3361 2108 3371 2091 3382 2077C3391 2066 3402 2059 3414 2059C3424 2059 3432 2061 3439 2065C3445 2048 3450 2032 3451 2014C3453 1998 3453 1983 3451 1968C3448 1948 3442 1928 3435 1911C3425 1912 3413 1911 3402 1909C3387 1906 3373 1900 3363 1890C3353 1880 3347 1866 3345 1851C3342 1835 3341 1820 3342 1804C3343 1782 3345 1762 3349 1745C3353 1732 3361 1722 3371 1714C3383 1707 3396 1704 3410 1704Z"/><path fill="#FFFECF" d="M3410 1743C3416 1742 3422 1744 3427 1746C3437 1755 3447 1767 3457 1780C3470 1800 3482 1821 3492 1843C3502 1864 3510 1885 3515 1905C3519 1925 3522 1945 3522 1964C3522 1984 3519 2003 3515 2022C3510 2047 3503 2072 3495 2096C3488 2120 3481 2141 3472 2159C3465 2172 3458 2182 3449 2190C3438 2198 3426 2203 3414 2206C3402 2209 3390 2209 3379 2207C3384 2183 3391 2160 3398 2139C3404 2125 3412 2113 3421 2103C3431 2108 3440 2117 3451 2117C3461 2117 3468 2112 3472 2104C3481 2085 3487 2066 3492 2046C3497 2025 3499 2004 3499 1983C3499 1961 3495 1940 3488 1921C3482 1904 3474 1888 3464 1874C3460 1869 3455 1867 3449 1868C3438 1869 3427 1872 3417 1871C3409 1870 3403 1866 3398 1858C3393 1843 3389 1826 3389 1808C3389 1788 3391 1769 3396 1753C3398 1746 3403 1744 3410 1743Z"/><path fill="none" stroke="#696969" stroke-width="33" stroke-linecap="round" stroke-linejoin="round" d="M3476 2213C3484 2225 3486 2240 3484 2258C3465 2258 3445 2258 3434 2262C3418 2268 3418 2285 3436 2288L3480 2286C3482 2310 3470 2328 3452 2340C3440 2328 3420 2318 3408 2320C3393 2325 3393 2345 3408 2352C3420 2356 3435 2354 3448 2352C3448 2372 3438 2392 3427 2406"/></svg>`;
+        S.L1 = () => `<div class="screen">${status('20:13')}
+ <div class="content" style="padding:0 24px;height:640px;justify-content:center">
+  <h3 class="display" style="font-size:26px;line-height:36px">家族の様子がアプリでわかる</h3>
+  <div style="margin-top:32px;display:flex;flex-direction:column;gap:12px">
+   ${welcomeLine('phone', 'ご家族は電話で話すだけ')}
+   ${welcomeLine('sparkles', '会話の内容は短い要約で確認')}
+   ${welcomeLine('pencil', '伝言や電話の時間はアプリで指定')}
+  </div>
+ </div>
+ <div class="foot" style="padding:0 24px"><button class="btn L primary fillw"${to('L2')}>始める</button>${homebar()}</div>
+</div>`;
+        const orLine = () => `<div style="display:flex;align-items:center;gap:12px"><i style="display:block;flex:1;height:1px;background:var(--line-strong)"></i><span class="label-m muted">または</span><i style="display:block;flex:1;height:1px;background:var(--line-strong)"></i></div>`;
+        const mailField = (focus) => `<div style="display:flex;flex-direction:column;gap:6px"><label class="label-m">メールアドレス</label><div class="field ${focus ? 'focus' : ''}"><span class="label-l" style="font-weight:500"></span></div></div>`;
+        const passField = (hint, focus) => `<div style="display:flex;flex-direction:column;gap:6px"><label class="label-m">パスワード</label><div class="field ${focus ? 'focus' : ''}" style="justify-content:space-between;padding-right:6px"><span class="label-l" style="letter-spacing:.14em"></span><button class="iconbtn" aria-label="パスワードを表示">${icon('eye', 22, INK2)}</button></div>${hint || ''}</div>`;
+        const disabledBtn = t => `<button class="btn L fillw" disabled aria-disabled="true" style="background:#D5D6D9;color:${INK2};cursor:not-allowed">${t}</button>`;
+        // lockedはL2b(直接チェックできない)。L2dではチェックを押すたびにオンとオフが切り替わる
+        const agreeRow = (t, on, go, locked) => `<div class="card" style="flex-direction:row;align-items:center;gap:2px;padding:0 8px 0 12px;min-height:56px"><button class="agreebox" role="checkbox" aria-checked="${on ? 'true' : 'false'}" aria-label="${t}に同意" data-doc="${go}"${locked ? ' disabled aria-disabled="true"' : ''}><i>${icon('check', 16, RAISED)}</i></button><button${to(go)} style="flex:1;min-width:0;min-height:56px;display:flex;align-items:center;gap:8px;text-align:left"><span class="label-m" style="flex:1">${t}に同意する</span>${icon('chevron-right', 20, INK2)}</button></div>`;
+        const signup = agreed => `<div class="screen">${status('20:14')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', '', 'L1')}
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:12px">
+   <h3 class="display" style="font-size:28px;line-height:38px">新規登録</h3>
+   <div style="display:flex;flex-direction:column;gap:6px">
+    <span class="label-m">それぞれ開いて内容を読み、同意してください</span>
+    ${agreeRow('利用規約', agreed, 'L2c', !agreed)}${agreeRow('プライバシーポリシー', agreed, 'L2p', !agreed)}
+   </div>
+   <button class="btn L secondary fillw" data-register ${agreed ? to('L3') : 'disabled aria-disabled="true"'}>${LOGO_GOOGLE}Googleで登録</button>
+   ${orLine()}
+   ${mailField()}
+   ${passField('<span class="body-s muted">8文字以上で入力してください</span>')}
+  </div>
+ </div>
+ <div class="foot"><button class="btn L primary fillw" data-register ${agreed ? to('L3') : 'disabled aria-disabled="true"'}>登録する</button>${homebar()}</div>
+</div>`;
+        S.L2 = () => `<div class="screen">${status('20:14')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', '', 'L1')}
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:16px">
+   <h3 class="display" style="font-size:28px;line-height:38px">ログイン</h3>
+   <button class="btn L secondary fillw"${to('00')}>${LOGO_GOOGLE}Googleでログイン</button>
+   ${orLine()}
+   ${mailField()}
+   ${passField('')}
+   <button class="btn L primary fillw"${to('00')}>ログイン</button>
+   <button class="btn M ghost-ink" style="align-self:center;text-decoration:underline;text-underline-offset:3px"${to('L2a')}>パスワードを忘れた場合</button>
+  </div>
+ </div>
+ <div class="foot"><button class="btn M ghost fillw link"${to('L2+')}>はじめての方は新規登録</button>${homebar()}</div>
+</div>`;
+        S.L2a = () => `<div class="screen">${status('20:14')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', '', 'L2')}
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:16px">
+   <div style="display:flex;flex-direction:column;gap:8px"><h3 class="display" style="font-size:28px;line-height:38px">パスワードの再設定</h3><p class="body-m muted">登録したメールアドレスを入力してください。再設定用のリンクをメールでお送りします。</p></div>
+   ${mailField()}
+   <div class="card" data-reset-done role="status" style="display:none;flex-direction:row;align-items:flex-start"><span class="iconbtn" style="width:36px;height:36px;background:var(--ok-soft)">${icon('check', 18)}</span><div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0"><span class="label-l">メールを送信しました</span><span class="body-s muted">届いたメールのリンクから、新しいパスワードを設定してください。</span></div></div>
+  </div>
+ </div>
+ <div class="foot"><button class="btn L primary fillw" data-reset-send>再設定メールを送る</button>${homebar()}</div>
+</div>`;
+        S['L2a+'] = () => `<div class="screen">${status('20:14')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', '', 'L2')}
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:16px">
+   <div style="display:flex;flex-direction:column;gap:8px"><h3 class="display" style="font-size:28px;line-height:38px">パスワードの再設定</h3><p class="body-m muted">登録したメールアドレスを入力してください。再設定用のリンクをメールでお送りします。</p></div>
+   ${mailField()}
+   <div class="card" role="alert" style="flex-direction:row;align-items:flex-start;background:var(--alert-soft);border:2px solid var(--alert)"><span class="iconbtn" style="width:36px;height:36px;background:${RAISED}">${icon('alert', 18, ALERT)}</span><div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0"><span class="label-l">メールを送信できませんでした</span><span class="body-s">メールアドレスと通信状況を確認して、もう一度お試しください。</span></div></div>
+  </div>
+ </div>
+ <div class="foot"><button class="btn L primary fillw"${to('L2a')}>${icon('rotate', 20, RAISED)}もう一度送る</button>${homebar()}</div>
+</div>`;
+        S['L2+'] = () => signup(false);
+        const clause = (h, t) => `<div style="display:flex;flex-direction:column;gap:4px"><h4 class="label-l">${h}</h4><p class="body-m muted">${t}</p></div>`;
+        // 規約とポリシーの共通画面。本文を最後までスクロールすると「同意する」が押せる
+        const legalScreen = (time, title, note, body) => `<div class="screen">${status(time)}
+ <div class="content" style="height:798px">
+  ${navBar('x', '閉じる', title, 'L2+')}
+  <div style="height:4px;background:var(--line-strong);flex:none" role="progressbar" aria-label="読んだ割合" aria-valuemin="0" aria-valuemax="100"><i data-legal-bar style="display:block;width:0;height:4px;background:${INK}"></i></div>
+  <div data-legal style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:16px 16px 140px;display:flex;flex-direction:column;gap:16px">
+   <p class="label-s" style="padding:6px 10px;border-radius:8px;background:${SUNKEN}">${note}</p>
+   ${body}
+  </div>
+ </div>
+ <div class="foot" style="padding-top:40px;background:linear-gradient(180deg,rgba(245,245,245,0) 0,#F5F5F5 36px)">${disabledBtn('同意する')}${homebar()}</div>
+</div>`;
+        S.L2c = () => legalScreen('20:15', '利用規約', 'モック用の見本です。実際の規約ではありません。', `
+   ${clause('第1条 サービスの内容', 'AIが見守る方の固定電話に電話をかけ、話した内容をまとめて、ご家族のアプリに届けます。')}
+   ${clause('第2条 見守る方の同意', 'ご利用者は、電話の相手がAIであること、会話の内容が文字として残ることを、見守る方に説明してください。最初の電話でもAIから説明し、同意がない場合は共有しません。')}
+   ${clause('第3条 医療上の判断', 'まとめはご本人の話をAIが整理したものです。診断や受診の判断には使えません。')}
+   ${clause('第4条 緊急のとき', '電話に出ないときの通知は、安否を保証するものではありません。緊急のときは、ご家族から直接連絡してください。')}
+   ${clause('第5条 アカウントの管理', 'メールアドレスとパスワードは、ご自身で管理してください。第三者に知られた場合は、すぐに変更してください。')}
+   ${clause('第6条 サービスの変更', 'サービスの内容は、事前にお知らせしたうえで変更または停止することがあります。')}`);
+        S.L2p = () => legalScreen('20:15', 'プライバシーポリシー', 'モック用の見本です。実際のポリシーではありません。', `
+   ${clause('第1条 取得する情報', 'ご利用者の情報として、メールアドレス、パスワード、Googleで登録した場合のアカウント情報を取得します。見守る方の情報として、お名前、電話での呼び方、電話番号、好きな話題を取得します。通話については、日時、通話時間、会話を文字にした記録、AIのまとめを取得します。')}
+   ${clause('第2条 利用の目的', '取得した情報は、次の目的に使います。見守る方へ電話をかけること。会話をまとめてご家族に届けること。伝言を伝え、返答を表示すること。電話に出ないときに通知すること。サービスの維持と不具合の調査。')}
+   ${clause('第3条 見守る方への説明', 'ご利用者は、電話の相手がAIであること、会話の内容が文字として残ることを、見守る方に説明してください。最初の電話でもAIから説明し、同意がない場合は共有しません。')}
+   ${clause('第4条 健康に関する情報', '会話には、体調、服薬、通院の話が含まれることがあります。これらは要配慮個人情報にあたる場合があるため、ご本人の同意を得たうえで取り扱います。')}
+   ${clause('第5条 情報を共有する相手', '会話の記録とまとめは、見守る方を登録したアカウントのご家族が見られます。法令にもとづく場合などを除き、ご本人の同意なく第三者に提供しません。')}
+   ${clause('第6条 外部への委託', '電話の発信、会話の文字起こし、AIによるまとめ、データの保管を、外部の事業者に委託することがあります。委託先には、情報を適切に扱うよう必要な管理を行います。')}
+   ${clause('第7条 保管と削除', '情報は、サービスを利用している間保管します。退会または削除のご依頼があったときは、法令で保管が必要なものを除いて削除します。')}
+   ${clause('第8条 開示、訂正、利用停止', 'ご本人またはご利用者は、ご自身の情報の開示、訂正、削除、利用停止を求めることができます。お問い合わせ窓口までご連絡ください。')}
+   ${clause('第9条 安全管理', '情報の漏えいや紛失を防ぐため、アクセスの制限など、必要な安全管理を行います。')}
+   ${clause('第10条 このポリシーの変更', '内容を変更するときは、事前にアプリでお知らせします。')}`);
+        S.L2d = () => signup(true);
+
+        // ---------- 2. Sync ----------
+        const stepRow = (n, t, d) => `<div class="step"><b>${n}</b><div style="display:flex;flex-direction:column"><span class="label-l">${t}</span><span class="body-s muted">${d}</span></div></div>`;
+        const hashLabel = '<span class="label-s" style="position:absolute;left:279px;top:196px">＃ボタン</span>';
+        S.L3 = () => `<div class="screen">${status('20:16')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', '電話機と同期', 'L2d')}
+  <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:20px">
+   ${illus('off', hashLabel)}
+   <div class="title-l">
+    電話機との同期を始めます。
+   </div>
+  </div>
+ </div>
+ <div class="foot"><button class="btn L primary fillw"${to('L3w')}>同期を始める</button>${homebar()}</div>
+</div>`;
+        // L3w: アプリの準備ができた。電話機の＃を押すと、受話器から認証コードが流れる
+        S.L3w = () => `<div class="screen">${status('20:16')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', '電話機と同期', 'L3')}
+  <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:20px">
+   ${illus('off', hashLabel)}
+   <div style="display:flex;flex-direction:column;gap:8px"><h3 class="title-l">電話機の受話器を上げて<br>「＃」を押してください</h3><span class="body-m muted">受話器から6桁の認証コードが流れます。</span></div>
+   <span class="body-s muted">準備は10分で切れます。切れたときは、もう一度「同期を始める」から始めます。</span>
+  </div>
+ </div>
+ <div class="foot"><button class="btn L primary fillw"${to('L3k')}>認証コードを入力する</button><button class="btn M ghost fillw link"${to('L3+')}>認証コードが聞こえないとき</button>${homebar()}</div>
+</div>`;
+        // L3k: 受話器から聞こえた6桁を入力する。6桁そろうと「送信」が押せる(モックでは送信するとL5へ)
+        const codeBoxes = (v, err) => `<div class="code${err ? ' err' : ''}" data-code="${v}" role="group" aria-label="6桁の認証コード">${Array.from({ length: 6 }, (_, i) => `<i class="${!err && i === v.length ? 'cur' : ''}">${v[i] || ''}</i>`).join('')}</div>`;
+        const keypad = () => `<div class="keypad">${['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'].map(k => k === '' ? '<button class="blank" tabindex="-1" aria-hidden="true"></button>' : k === 'del' ? `<button data-key="del" aria-label="1文字消す">${icon('delete', 24)}</button>` : `<button data-key="${k}">${k}</button>`).join('')}</div>`;
+        const codeScreen = (time, v, err) => `<div class="screen">${status(time)}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', '認証コードの入力', 'L3w')}
+  <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:16px">
+   <h3 class="title-l">受話器から聞こえた<br>6桁の数字を入力してください</h3>
+   ${codeBoxes(v, err)}
+   ${err ? `<div data-code-err role="alert" style="display:flex;gap:8px;align-items:flex-start">${icon('alert', 20, ALERT)}<div style="display:flex;flex-direction:column;gap:2px"><span class="label-l" style="color:var(--alert)">認証コードが違います</span><span class="body-s muted">電話機の「＃」をもう一度押すと、<br>認証コードがもう一度流れます。</span></div></div>` : `<span class="body-s muted">聞きのがしたときは、電話機の「＃」をもう一度押します。</span>`}
+   <button class="btn M ghost fillw link"${to('L3+')}>認証コードが聞こえないとき</button>
+  </div>
+ </div>
+ <div class="foot"><button class="btn L primary fillw" data-send${v.length < 6 ? ' disabled aria-disabled="true"' : ''}${to('L5')}>送信</button><div style="height:8px"></div>${keypad()}${homebar()}</div>
+</div>`;
+        S.L3k = () => codeScreen('20:17', '482', false);
+        S['L3k+'] = () => codeScreen('20:18', '482751', true);
+        S['L3+'] = () => `<div class="screen">${status('20:17')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', '認証コードが聞こえないとき', 'L3k')}
+  <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:20px">
+   ${illus('off', hashLabel)}
+   <div class="steps">
+    ${stepRow(1, '受話器を耳にしっかり当てる', '認証コードは受話器から流れます。周りが静かなところで聞きます')}
+    ${stepRow(2, 'もう一度「＃」を押す', '準備が切れるまでは、何度でも聞き直せます')}
+    ${stepRow(3, '電源と電話線を確かめる', '抜けていないか確かめてから、「同期を始める」からやり直します')}
+   </div>
+  </div>
+ </div>
+ <div class="foot"><button class="btn L primary fillw"${to('L3k')}>認証コードを入力する</button>${homebar()}</div>
+</div>`;
+        S.L5 = () => `<div class="screen">${status('20:18')}
+ <div class="content">
+  ${navBar('x', '閉じる', '電話機と同期', 'L3')}
+  <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:20px">   ${illus('off', '', false)}
+
+   <div style="display:flex;flex-direction:column;gap:4px"><h3 class="title-l">同期が完了しました！</h3><span class="body-m muted">以下の電話機からAIが電話できるようになりました。</span></div>
+   <div class="card" style="flex-direction:row;align-items:center"><span class="iconbtn tinted">${icon('phone', 20)}</span><div style="display:flex;flex-direction:column"><span class="mono-m">03-0000-0000</span></div></div>
+  </div>
+ </div>
+ <div class="foot"><button class="btn L primary fillw"${to('L6')}>セットアップへ進む</button>${homebar()}</div>
+</div>`;
+
+        // ---------- 3. Setup ----------
+        S.L6 = () => `<div class="screen">${status('20:18')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', 'セットアップ', 'L5')}
+  <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:24px">
+   ${prog(1, 3)}
+   <h3 class="title-l">見守る方のお名前を<br>教えてください</h3>
+   <div style="display:flex;flex-direction:column;gap:8px"><label class="label-m">お名前</label><div class="field focus"><span class="label-l">田中 ハナ</span></div></div>
+   <div style="display:flex;flex-direction:column;gap:8px"><label class="label-m">電話での呼び方<span class="body-s muted"> ※あとから変更できます</span></label><div class="field"><span class="label-l">ハナさん</span></div></div>
+  </div>
+ </div>
+ <div class="foot"><button class="btn L primary fillw"${to('L7')}>次へ</button>${homebar()}</div>
+</div>`;
+        const topicInput = ph => `<div class="field" style="min-height:48px;flex:none;position:relative;padding-right:28px"><input type="text" placeholder="${ph}" aria-label="ほかの話題" data-topic-input><button class="topic-x" data-remove-topic aria-label="この入力欄を消す">${icon('x', 12, INK2)}</button></div>`;
+        const TOPICS = [['家族・孫', 1], ['庭・花', 1], ['料理', 1], ['大相撲'], ['野球'], ['旅行'], ['テレビ'], ['音楽'], ['昔の話'], ['季節の行事'], ['健康'], ['ペット']];
+        const topicScreen = (time, navTitle, back, head, foot) => `<div class="screen">${status(time)}
+ <div class="content" style="height:692px">
+  ${navBar('chevron-left', 'もどる', navTitle, back)}
+  ${head}
+  <div class="topic-scroll" data-topic-scroll style="flex:1;min-height:0;padding:8px 12px 8px 16px;display:flex;flex-direction:column;gap:16px">
+   <div style="display:flex;flex-direction:column;gap:4px"><h3 class="title-l">ハナさんの好きな話題を<br>選んでください</h3><span class="body-s muted">あとから変更できます。</span></div>
+   <div class="topics" data-topics style="flex:none">${TOPICS.map(([t, on]) => `<button class="topic" aria-pressed="${on ? 'true' : 'false'}">${icon('check', 14, RAISED)}${t}</button>`).join('')}</div>
+   <div style="display:flex;gap:8px;align-items:flex-start;flex:none"><button class="iconbtn tinted" data-add-topic aria-label="入力欄を増やす" style="width:48px;height:48px;position:sticky;top:0">${icon('plus', 20)}</button><div data-topic-inputs style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">${topicInput('ほかの話題を入力(例: 俳句)')}</div></div>
+   <span class="label-m" data-topic-count>3つ選択中</span>
+  </div>
+ </div>
+ <div class="foot">${foot}${homebar()}</div>
+</div>`;
+        S.L7 = () => topicScreen('20:19', 'セットアップ', 'L6', `<div style="padding:8px 16px;flex:none">${prog(2, 3)}</div>`, `<button class="btn L primary fillw"${to('L8')}>次へ</button>`);
+        S['08b'] = () => topicScreen('10:25', '好きな話題', '08', '', `<button class="btn L primary fillw" data-save-topics${to('08')}>保存する</button>`);
+        const voiceRow = (name, desc, on) => `<div class="card voice" role="radio" aria-checked="${on ? 'true' : 'false'}" tabindex="0"><span class="radio"></span><div style="display:flex;flex-direction:column;flex:1;min-width:0"><span class="label-l">${name}</span><span class="body-s muted">${desc}</span></div><button class="iconbtn tinted" data-play aria-label="${name}を試し聞き">${icon('play', 18)}</button></div>`;
+        const voiceScreen = (time, navTitle, back, head, foot) => `<div class="screen">${status(time)}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', navTitle, back)}
+  <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:16px">
+   ${head}
+   <div style="display:flex;flex-direction:column;gap:4px"><h3 class="title-l">AIの声を選んでください</h3><span class="body-s muted">あとから変更できます。</span></div>
+   <div role="radiogroup" aria-label="AIの声" style="display:flex;flex-direction:column;gap:8px">
+    ${voiceRow('やさしい女性の声', 'ゆっくり、やわらかく話します', 1)}
+    ${voiceRow('落ち着いた女性の声', '低めの声で、はっきり話します')}
+    ${voiceRow('おだやかな男性の声', 'ゆっくり、やわらかく話します')}
+    ${voiceRow('明るい男性の声', '高めの声で、はきはき話します')}
+   </div>
+  </div>
+ </div>
+ <div class="foot">${foot}${homebar()}</div>
+</div>`;
+        S.L8 = () => voiceScreen('20:20', 'セットアップ', 'L7', prog(3, 3), `<button class="btn L primary fillw"${to('T1')}>はじめる</button>`);
+        S['08c'] = () => voiceScreen('10:25', 'AIの声', '08', '', `<button class="btn L primary fillw" data-save-voice${to('08')}>保存する</button>`);
+
+        // ---------- 4. Home ----------
+        const hhead = (t = '11月5日(木) 10:24 時点') => `<div class="hhead"><span class="avatar M" style="background:${HANA}">ハ</span><div style="display:flex;flex-direction:column;flex:1"><span class="label-l">田中ハナさん</span><span class="label-s muted">${t}</span></div><button class="iconbtn" aria-label="田中ハナさんの設定"${to('08')}>${icon('settings')}</button></div>`;
+        const recentCard = () => `<section class="nightcard" data-part="recent">
+  <div style="display:flex;justify-content:space-between;align-items:center"><span class="label-m">直近の電話</span><span class="mono-s nmuted">今日 9:02 ・ 6分</span></div>
+  <p class="title-m" style="margin-top:12px">朝ごはんを食べ、薬も飲んだそうです。膝の痛みを少し気にしています。</p>
+  <button class="btn M light fillw" style="margin-top:16px"${to('05')}>会話を見る${icon('chevron-right', 18, NIGHT)}</button>
+ </section>`;
+        const askCard = () => `<button class="card" data-part="ask"${to('01')} style="flex-direction:row;align-items:center;justify-content:space-between;text-align:left;width:100%"><span class="title-m">AIに伝えてもらう</span>${icon('chevron-right', 20, INK2)}</button>`;
+        const stateRow = (ic, l, v, q, flag) => `<div class="state"><span class="iconbtn tinted" style="width:36px;height:36px">${icon(ic, 18)}</span><div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label-s muted">${l}</span>${flag ? `<span class="pill care">${icon('alert', 14, INK)}気になる話</span>` : ''}</div><span class="label-l">${v}</span><span class="cap-s muted">${q}</span></div></div>`;
+        const todayCard = () => `<section class="card" data-part="today">
+  <div style="display:flex;justify-content:space-between;align-items:baseline"><h3 class="title-m">今日の様子</h3><span class="label-s muted">9:02の会話より</span></div>
+  ${stateRow('utensils', '食事', '朝ごはんを食べた', '朝ごはんも食べたしね')}
+  ${stateRow('moon', '睡眠', 'よく眠れた', 'よく眠れたよ')}
+  ${stateRow('heart', '体調', '膝が痛い。階段がつらい', '昨日の夕方から膝が痛くてね', 1)}
+ </section>`;
+        const home = (mode = 'top') => `<div class="screen">${status('10:24')}${hhead()}
+ <div class="hview"><div class="hcol" data-scroll="${mode}" style="top:0">${recentCard()}${askCard()}${todayCard()}</div></div>${tabs('home')}</div>`;
+        // T1〜T9: セットアップのあとに一度だけ出るチュートリアル。画面の上を暗くして、説明する場所だけを明るく残す
+        // spot: 明るくする場所(CSSセレクタ)。説明は場所の下に出し、入りきらないときは上に出す
+        const TUT_N = 9;
+        const tut = (n, spot, title, body, next) => `<div class="tut" data-tut="${spot}" role="dialog" aria-label="使い方 ${n}/${TUT_N}"><i class="tut-spot"></i>
+ <div class="tut-tip">
+  <div style="display:flex;justify-content:space-between;align-items:center"><span class="label-s muted">使い方 ${n}/${TUT_N}</span><div style="width:110px">${prog(n, TUT_N)}</div></div>
+  <div style="display:flex;flex-direction:column;gap:4px"><span class="title-m">${title}</span><span class="body-m muted">${body}</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px">${n < TUT_N ? `<button class="btn M ghost link" style="padding:0 8px"${to('00')}>スキップ</button>` : '<span></span>'}<div style="display:flex;align-items:center;gap:8px">${n > 1 ? `<button class="btn M secondary" style="padding:0 16px"${to('T' + (n - 1))}>戻る</button>` : ''}<button class="btn M primary" style="padding:0 24px"${to(next)}>${n < TUT_N ? '次へ' : 'はじめる'}</button></div></div>
+ </div></div>`;
+        const tutOn = (screen, t) => screen.replace(/<\/div>$/, `${t}</div>`);
+        S.T1 = () => tutOn(home('top'), tut(1, '[data-part=recent]', '直近の電話', 'AIがハナさんにかけた電話の内容を短くまとめてここに届けます。「会話を見る」で全文も読めます。', 'T2'));
+        S.T2 = () => tutOn(home('top'), tut(2, '[data-part=ask]', 'AIに伝えてもらう', '伝えたいことを入力するとAIが電話でハナさんに伝えます。日時を決めて予約もできます。', 'T3'));
+        S.T3 = () => tutOn(home('today'), tut(3, '[data-part=today]', '今日の様子', '食事、睡眠、体調の3つをハナさんの言葉と一緒にまとめます。気になる話には印が付きます。下には7日間の様子も出ます。', 'T4'));
+        // 通話記録の機能: 日付の選び方、記録の並び、詳細
+        S.T4 = () => tutOn(S['04'](), tut(4, '.mini', '通話記録 日付を選ぶ', '「過去7日間」は横にスクロールすると前の日も見られます。電話に出た日は点、出なかった日は×で示します。押すとカレンダーが開き、もっと前の日付も選べます。', 'T5'));
+        S.T5 = () => tutOn(S['04'](), tut(5, '.tl-row', '通話記録 記録を読む', '電話ごとに話した内容を一言でまとめ、話題の種類と通話時間を並べます。出なかった電話も残します。記録を押すと詳しい内容が開きます。', 'T6'));
+        S.T6 = () => tutOn(S['05'](), tut(6, '[data-part=summary]', '通話記録 詳しい内容', '上のAIのまとめを押すと、その時刻の会話の全文を下に表示します。', 'T7'));
+        // 予約電話の機能: 予約の確認と編集、新しい予約、かけなおしのルール
+        S.T7 = () => tutOn(S['06'](), tut(7, '[data-part=booked]', '予約電話 予約を確かめる', '決まった時間にかける予定を並べます。押すと、伝える内容と日時を変えられます。「今すぐ通話」もできます。', 'T8'));
+        S.T8 = () => tutOn(S['06'](), tut(8, '[data-part=newbook]', '予約電話 新しい予約', '「AIに伝えてもらう」と同じ画面で、伝えたいことと日時を決めて予約します。', 'T9'));
+        S.T9 = () => tutOn(S['06'](), tut(9, '[data-part=rule]', '予約電話 かけなおしのルール', 'ハナさんが電話に出ないとき、何分おきに何回かけなおすかを決めます。それでも出ないときは、家族に通知が届きます。', '00'));
+        const setRow = (l, v, go) => `<button class="setrow"${to(go)}><div style="display:flex;flex-direction:column;flex:1;min-width:0"><span class="label-s muted">${l}</span><span class="label-l" style="font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${v}</span></div>${icon('chevron-right', 20, INK2)}</button>`;
+        const editRow = (l, v) => `<label class="setrow" style="flex-direction:column;align-items:stretch;gap:6px;padding:12px 0;cursor:text"><span class="label-s muted">${l}</span><span class="field" style="min-height:48px"><input type="text" value="${v}" aria-label="${l}"></span></label>`;
+        S['08'] = () => `<div class="screen">${status('10:25')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', '田中ハナさんの設定', '00')}
+  <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:16px">
+   <section class="card" style="padding:0 16px;gap:0">
+    ${editRow('見守る方のお名前', '田中 ハナ')}
+    ${editRow('電話での呼び方', 'ハナさん')}
+    ${setRow('好きな話題', '<span data-topic-summary>家族・孫、庭・花、料理</span>', '08b')}
+    ${setRow('AIの声', '<span data-voice-summary>やさしい女性の声</span>', '08c')}
+   </section>
+   <section class="card" style="padding:0 16px;gap:0">
+    ${setRow('同期している電話機', '03-0000-0000', 'L3')}
+    ${setRow('かけなおしのルール', '<span data-rule-summary>15分おきに3回かけて、家族に通知</span>', '07')}
+   </section>
+   <section class="card" style="padding:0 16px;gap:0">
+    ${setRow('チュートリアル確認', '使い方をもう一度見る', 'T1')}
+    ${setRow('アカウント情報', 'tanaka.taro@example.com', '08e')}
+   </section>
+  </div>
+ </div>
+ <div class="foot">${homebar()}</div>
+</div>`;
+        S['08d'] = () => `<div class="screen">${status('10:26')}
+ <div class="content" style="height:798px">
+  ${navBar('x', '閉じる', 'ログアウト', '08e')}
+  <div style="flex:1;padding:0 24px 200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center">
+   <span class="iconbtn" style="width:72px;height:72px;background:var(--alert-soft)">${icon('log-out', 36, ALERT)}</span>
+   <h3 class="title-l">ログアウトしますか？</h3>
+   <p class="body-m muted">ログアウトしても、AIからの電話や<br>会話の記録はそのまま続きます。<br>もう一度見るときは、ログインしてください。</p>
+  </div>
+ </div>
+ <div class="foot"><button class="btn L primary fillw" style="background:${ALERT}"${to('L2')}>ログアウトする</button><button class="btn M ghost fillw link"${to('08e')}>アカウント情報にもどる</button>${homebar()}</div>
+</div>`;
+        // 08e: 管理者(家族)のアカウント情報。お名前はこの画面で直接書き換える
+        const infoRow = (l, v) => `<div class="setrow"><div style="display:flex;flex-direction:column;flex:1;min-width:0"><span class="label-s muted">${l}</span><span class="label-l" style="font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${v}</span></div></div>`;
+        S['08e'] = () => `<div class="screen">${status('10:26')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', 'アカウント情報', '08')}
+  <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:16px">
+   <section class="card" style="padding:0 16px;gap:0">
+    ${editRow('あなたのお名前', '田中 太郎')}
+    ${infoRow('メールアドレス', 'tanaka.taro@example.com')}
+    ${setRow('パスワード', '••••••••', 'L2a')}
+   </section>
+   <section class="card" style="padding:0 16px;gap:0">
+    ${infoRow('ログイン方法', 'メールアドレスとパスワード')}
+    ${infoRow('登録日', '2026年11月5日')}
+   </section>
+   <button class="btn L secondary fillw" style="color:${ALERT}"${to('08d')}>${icon('log-out', 20, ALERT)}ログアウト</button>
+  </div>
+ </div>
+ <div class="foot">${homebar()}</div>
+</div>`;
+        S['00'] = () => home('top');
+        S['02'] = () => home('today');
+
+        // ---------- AIに伝えてもらう ----------
+        const askScreen = busy => `<div class="screen">${status(busy ? '10:27' : '10:26')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', 'AIに伝えてもらう', '00')}
+  <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:16px">
+   <div style="display:flex;flex-direction:column;gap:8px"><label class="label-m">伝えたいこと</label><div class="field focus" style="padding:12px 16px;align-items:flex-start;min-height:60px"><span class="label-l" style="font-weight:500">金曜の通院、10時に迎えに行くと伝えて<i style="display:inline-block;width:2px;height:18px;background:${INK};vertical-align:-3px;margin-left:2px"></i></span></div></div>
+   <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">${aiTag('通話内容')}<button class="btn M ghost" style="padding:0 8px;height:32px">${icon('pencil', 16, INK2)}なおす</button></div>
+    <p class="cap-m">「ハナさん、美咲さんからご伝言です。<br>金曜の通院は、朝10時に<br>お迎えに来るそうです。」</p>
+   </div>
+   ${pickBtn('日時', '11/6(金)', '8:30')}
+  </div>
+ </div>
+ <div class="foot" style="gap:8px"><button class="btn L primary fillw"${to('06')}>${icon('calendar-clock', 20, RAISED)}この日時で予約する</button>${busy ? `<button class="btn M secondary fillw" disabled aria-disabled="true">${icon('phone', 18, INK2)}通話中です</button>` : `<button class="btn M secondary fillw"${to('01+')}>${icon('phone', 18)}今すぐ通話</button>`}${homebar()}</div>
+</div>`;
+
+        S['01'] = () => askScreen(false);
+        S['01a'] = () => askScreen(true);
+
+        // 01b: 日付はカレンダーで、時刻は30分ごとの候補から選ぶ。ハナさんがよく電話に出る時刻に緑の点を付ける
+        const WEEK = ['日', '月', '火', '水', '木', '金', '土'];
+        const TODAY = 5, OFTEN = ['9:00', '10:00', '19:00'];
+        const HOURS = Array.from({ length: 24 }, (_, i) => String(i)), MINS = Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, '0'));
+        const wheelCol = (key, items, sel, unit) => `<div class="wheel-col" data-col="${key}" role="listbox" aria-label="${unit}">${items.map(v => `<button class="${v === sel ? 'on' : ''}" data-v="${v}" role="option" aria-selected="${v === sel}">${v}</button>`).join('')}</div>`;
+        const dayLabel = d => `11/${d}(${WEEK[(d - 1) % 7]})`;
+        const whenSheet = (selDay = 6, selTime = '8:30') => {
+            let days = ''; for (let d = 1; d <= 30; d++) { const past = d < TODAY; days += `<button class="cal-d ${past ? 'past' : ''} ${d === selDay ? 'sel' : ''} ${d === TODAY ? 'today' : ''}" data-day="${d}"${past ? ' disabled aria-disabled="true"' : ''} aria-label="11月${d}日"><b>${d}</b></button>` }
+            return `<div class="scrim"></div><div class="sheet" data-when><div class="grip"><i></i></div>
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:12px">
+   <div style="display:flex;justify-content:space-between;align-items:center"><button class="iconbtn" aria-label="前の月" disabled aria-disabled="true" style="opacity:.3">${icon('chevron-left', 22)}</button><span class="title-m">2026年11月</span><button class="iconbtn" aria-label="次の月">${icon('chevron-right', 22)}</button></div>
+   <div class="cal book">${WEEK.map(w => `<div class="cal-w label-s">${w}</div>`).join('')}${days}</div>
+   <div style="display:flex;flex-direction:column;gap:8px">
+    <span class="label-m">時刻</span>
+    <div class="wheel"><i class="wheel-band"></i>${wheelCol('h', HOURS, selTime.split(':')[0], '時')}<span class="wheel-colon">:</span>${wheelCol('m', MINS, selTime.split(':')[1], '分')}</div>
+    <div class="quick"><span class="label-s muted" style="display:flex;align-items:center;gap:6px"><i class="often-dot"></i>よく電話に出る時刻</span>${[...OFTEN].map(t => `<button class="chip" data-quick="${t}">${t}</button>`).join('')}</div>
+   </div>
+   <button class="btn L primary fillw" style="margin-top:4px" data-when-done${to('01')}><span data-when-label>${dayLabel(selDay)} ${selTime}</span>にする</button>
+  </div>${homebar()}</div>`
+        };
+        S['01b'] = () => `<div class="screen">${askScreen(false).replace(/^<div class="screen">/, '').replace(/<\/div>$/, '')}${whenSheet()}</div>`;
+
+        const replyCard = () => `<section class="card" data-part="reply">
+  <div style="display:flex;justify-content:space-between;align-items:baseline"><h3 class="title-m">ハナさんからのお返事</h3><span class="mono-s muted">今日 10:29</span></div>
+  <div style="display:flex;flex-direction:column;gap:2px"><span class="label-s muted">伝えたこと</span><span class="body-m">金曜の通院は、朝10時にお迎えに来る</span></div>
+  <div style="display:flex;flex-direction:column;gap:2px;padding-top:12px;border-top:1px solid var(--line)"><span class="label-s" style="color:${HANA}">ハナさん</span><span class="title-m">わかったよ。玄関で待ってるね。</span></div>
+ </section>`;
+        S['01+'] = () => `<div class="screen">${status('10:30')}${hhead('11月5日(木) 10:30 時点')}
+ <div class="hview topic-scroll" data-reply-scroll><div class="hcol" style="top:0;padding-bottom:103px">${replyCard()}${recentCard()}${askCard()}${todayCard()}</div></div>${tabs('home')}</div>`;
+
+        // ---------- 5. Calls ----------
+        const tag = t => `<span class="label-s muted">${t}</span>`;
+        const callRow = (time, dur, one, tags) => `<div class="tl-row"><span class="mono-s tl-time">${time}</span><div class="tl-rail"><span class="avatar S" style="background:${INK}">${icon('phone', 12, '#FFFFFF')}</span><i></i></div><div class="tl-card" role="button" tabindex="0" style="cursor:pointer"${to('05')}><div class="cap-s" style="font-size:15px">${one}</div><div style="display:flex;justify-content:space-between;align-items:center">${tag(tags)}<span class="mono-s muted">${dur}</span></div></div></div>`;
+        const missRow = (time, one) => `<div class="tl-row"><span class="mono-s tl-time">${time}</span><div class="tl-rail"><span class="avatar S" style="background:${ALERT}">${icon('phone-missed', 12, '#FFFFFF')}</span><i></i></div><div class="tl-card miss"><span class="label-m" style="font-weight:700">${one}</span></div></div>`;
+        const dayH = (d, n) => `<div class="tl-day"><span class="label-l">${d}</span><span class="label-s muted">${n}</span></div>`;
+        const dayMark = k => `<span class="mark">${k === 'call' ? '<i></i>' : k === 'miss' ? `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="${ALERT}" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 2l8 8"/><path d="M10 2 2 10"/></svg>` : ''}</span>`;
+        const MINI = [['23', '金', 'call'], ['24', '土', 'call'], ['25', '日', 'call'], ['26', '月', 'call'], ['27', '火', 'call'], ['28', '水', 'call'], ['29', '木', 'call'], ['30', '金', 'call'], ['31', '土', 'call'], ['1', '日', 'call'], ['2', '月', 'miss'], ['3', '火', 'call'], ['4', '水', 'call'], ['5', '木', 'call']];
+        const miniCal = (sel = 13) => `<div class="mini" role="button" tabindex="0" aria-label="カレンダーを開いて日付を選ぶ"${to('04+')}><span class="mini-head"><span class="label-m">過去7日間</span></span><span class="mini-days">${MINI.map(([d, w, k], i) => `<span class="mini-day ${i === sel ? 'sel' : ''}"><span class="label-s">${w}</span><span class="mono-m">${d}</span>${dayMark(k)}</span>`).join('')}</span></div>`;
+        const calSheet = () => {
+            const KIND = { 1: 'call', 2: 'miss', 3: 'call', 4: 'call', 5: 'call' }; let days = ''; for (let d = 1; d <= 30; d++)days += `<div class="cal-d ${d === 3 ? 'sel' : ''} ${d === 5 ? 'today' : ''} ${d > 5 ? 'future' : ''}"><b>${d}</b>${dayMark(KIND[d])}</div>`;
+            return `<div class="scrim"></div><div class="sheet"><div class="grip"><i></i></div>
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:8px">
+   <div style="display:flex;justify-content:space-between;align-items:center"><button class="iconbtn" aria-label="前の月">${icon('chevron-left', 22)}</button><span class="title-m">2026年11月</span><button class="iconbtn" aria-label="次の月">${icon('chevron-right', 22)}</button></div>
+   <div class="cal">${['日', '月', '火', '水', '木', '金', '土'].map(w => `<div class="cal-w label-s">${w}</div>`).join('')}${days}</div>
+   <div style="display:flex;justify-content:center;gap:20px"><span class="label-s muted" style="display:flex;align-items:center;gap:6px">${dayMark('call')}電話に出た</span><span class="label-s muted" style="display:flex;align-items:center;gap:6px">${dayMark('miss')}不在</span></div>
+   <button class="btn L primary fillw" style="margin-top:4px"${to('04c')}>11月3日の記録を見る</button>
+  </div>${homebar()}</div>`
+        };
+        const callList = () => `${status('10:31')}
+ <div class="content" style="left:0">
+  <div style="padding:8px 16px 8px"><h3 class="title-l">通話記録</h3></div>
+  ${miniCal()}
+  ${dayH('今日 11月5日(木)', '1回 ・ 6分')}
+  ${callRow('9:02', '6分', '朝食と薬は済み。膝を気にしている', '体調')}
+  ${dayH('11月4日(水)', '2回 ・ 12分')}
+  ${callRow('19:00', '3分', '夕飯は大根の煮物。夜の薬も飲んだ', '体調')}
+  ${callRow('12:00', '9分', 'テレビの映し方を案内して解決', '操作案内')}
+  ${dayH('11月3日(火)', '1回 ・ 18分')}
+  ${callRow('9:00', '18分', 'お孫さんの運動会の話がはずんだ', '話し相手')}
+  ${dayH('11月2日(月)', '不在')}
+  ${missRow('9:00', '電話に出ませんでした(3回かけました)')}
+ </div>`;
+        S['04'] = () => `<div class="screen">${callList()}${tabs('calls')}</div>`;
+        S['04+'] = () => `<div class="screen">${callList()}${calSheet()}</div>`;
+        S['04c'] = () => `<div class="screen">${status('10:31')}
+ <div style="position:absolute;left:0;top:54px;width:393px;height:122px;padding-top:8px;background:var(--paper-base);box-shadow:0 4px 10px rgba(0,0,0,.14);z-index:3">${miniCal(11)}</div>
+ <div style="position:absolute;left:0;top:176px;width:393px;height:676px;overflow:hidden">
+  <div style="position:absolute;left:0;top:-44px;width:393px;display:flex;flex-direction:column">
+   ${callRow('12:00', '9分', 'テレビの映し方を案内して解決', '操作案内')}
+   ${dayH('11月3日(火)', '1回 ・ 18分')}
+   ${callRow('9:00', '18分', 'お孫さんの運動会の話がはずんだ', '話し相手')}
+   ${dayH('11月2日(月)', '不在')}
+   ${missRow('9:00', '電話に出ませんでした(3回かけました)')}
+   ${dayH('11月1日(日)', '1回 ・ 31分')}
+   ${callRow('12:00', '31分', 'お米が残り少ないと相談があった', '話し相手')}
+   ${dayH('10月31日(土)', '1回 ・ 22分')}
+   ${callRow('9:00', '22分', '庭の菊が咲き始めた話をした', '話し相手')}
+  </div>
+ </div>${tabs('calls')}</div>`;
+        const sumRow = (t, at) => `<div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding-top:8px;border-top:1px solid var(--line)"><span class="body-m">${t}</span><span class="mono-s" style="text-decoration:underline;text-underline-offset:3px;flex:none">${at}</span></div>`;
+        const say = (t, who, txt, flag) => `<div class="say ${flag ? 'flag' : ''}"><span class="mono-s t">${t}</span><div><div class="who" style="color:${who === 'ai' ? AI_C : HANA}">${who === 'ai' ? 'AIヘルパー' : 'ハナさん'}${flag ? `<span class="pill care">${icon('alert', 14, INK)}気になる話</span>` : ''}</div><div class="cap-s txt">${txt}</div></div></div>`;
+        S['05'] = () => `<div class="screen">${status('10:32')}
+ <div class="content" style="height:707px">
+  ${navBar('chevron-left', '通話記録にもどる', '朝の電話', '04')}
+  <div class="topic-scroll" style="flex:1;min-height:0;padding:0 12px 16px 16px;display:flex;flex-direction:column;gap:12px">
+   <div class="card" style="gap:8px" data-part="summary">
+    <div style="display:flex;justify-content:space-between;align-items:center"><span class="label-m">通話時間</span><span class="mono-s muted">11/5 9:02 ・ 6分12秒</span></div>
+    ${sumRow('朝ごはんを食べ、よく眠れたそうです', '0:11')}
+    ${sumRow('昨日の夕方から膝が痛く、階段がつらいそうです', '1:03')}
+    ${sumRow('朝の薬は飲んだと話しています', '4:12')}
+    <button class="btn M ghost" style="height:32px;padding:0;align-self:flex-start">${icon('pencil', 16, INK2)}まとめの間違いを直す</button>
+   </div>
+   <h3 class="title-m">会話の内容</h3>
+   <div class="log">
+    ${say('0:00', 'ai', 'おはようございます、ハナさん。昨夜はよく眠れましたか。')}
+    ${say('0:11', 'ha', 'よく眠れたよ。朝ごはんも食べたしね。')}
+    ${say('0:48', 'ai', 'それは何よりです。お体の具合はいかがですか。')}
+    ${say('1:03', 'ha', '昨日の夕方から膝が痛くてね。階段がつらいの。', 1)}
+    ${say('2:00', 'ai', 'それはおつらいですね。美咲さんにもお伝えしておきましょうか。')}
+    ${say('2:21', 'ha', 'そうね、お願いしようかな。')}
+   </div>
+  </div>
+ </div>
+ ${tabs('calls')}
+</div>`;
+
+        // ---------- 6. Booking ----------
+        const BOOKED = [
+            { date: '今日', time: '12:00', content: '話し相手', script: '「ハナさん、こんにちは。<br>体調はいかがですか。」' },
+            { date: '今日', time: '19:00', content: '薬と戸締まりの確認', script: '「ハナさん、こんばんは。<br>夜のお薬は飲みましたか。<br>戸締まりもご確認ください。」' },
+            { date: '11/7', time: '10:00', content: '週末に帰ると伝える', script: '「ハナさん、ご家族からご伝言です。<br>週末に帰るそうです。」' },
+        ];
+        const bookedRow = (b, i) => `<div role="button" tabindex="0" data-booked="${i}"${to('06b')} style="display:flex;gap:12px;align-items:center;padding-top:10px;border-top:1px solid var(--line);cursor:pointer"><span class="mono-s" data-b-when style="width:72px;flex:none">${b.date} ${b.time}</span><span class="label-m" data-b-content style="flex:1;min-width:0">${b.content}</span>${icon('chevron-right', 18, INK2)}</div>`;
+        // 01: 日付と時刻を1つの項目にまとめる。押すと01bで選ぶ
+        const pickBtn = (l, d, tm) => `<div style="display:flex;flex-direction:column;gap:8px"><span class="label-m">${l}</span><button class="field" style="justify-content:space-between;gap:8px;width:100%"${to('01b')} aria-label="${l}を選ぶ"><span class="mono-m"><span data-pick="date">${d}</span> <span data-pick="time">${tm}</span></span>${icon('calendar-clock', 20, INK2)}</button></div>`;
+        const pick = (l, v) => `<div style="display:flex;flex-direction:column;gap:8px;flex:1"><label class="label-m">${l}</label><div class="field" style="justify-content:space-between"><span class="mono-m">${v}</span></div></div>`;
+        S['06'] = () => `<div class="screen">${status('10:35')}
+ <div class="content">
+  <div style="padding:8px 16px 8px"><h3 class="title-l">予約電話</h3></div>
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:12px">
+   <section class="card" style="gap:10px" data-part="booked">
+    <h3 class="title-m">予約している電話</h3>
+    ${BOOKED.map(bookedRow).join('')}
+   </section>
+   <button class="btn L primary fillw" data-part="newbook"${to('01')}>${icon('plus', 20, RAISED)}新しい予約</button>
+   <button class="card" data-part="rule" style="flex-direction:row;align-items:center;text-align:left"${to('07')}><span class="iconbtn tinted">${icon('rotate', 20)}</span><div style="display:flex;flex-direction:column;flex:1"><span class="label-l">かけなおしのルール</span><span class="body-s muted" data-rule-summary>15分おきに3回かけて、家族に通知</span></div>${icon('chevron-right', 20, INK2)}</button>
+  </div>
+ </div>${tabs('book')}</div>`;
+        const bookField = (l, key, v) => `<div style="display:flex;flex-direction:column;gap:8px;flex:1;min-width:0"><label class="label-m">${l}</label><div class="field"><input type="text" value="${v}" aria-label="${l}" data-book="${key}"></div></div>`;
+        S['06b'] = () => `<div class="screen">${status('10:35')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', '予約の編集', '06')}
+  <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:16px">
+   <div style="display:flex;flex-direction:column;gap:8px"><label class="label-m">伝えたいこと</label><div class="field focus" style="min-height:60px"><input type="text" value="${BOOKED[0].content}" aria-label="伝えたいこと" data-book="content"></div></div>
+   <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">${aiTag('通話内容')}<button class="btn M ghost" style="padding:0 8px;height:32px">${icon('pencil', 16, INK2)}なおす</button></div>
+    <p class="cap-m" data-book-script>${BOOKED[0].script}</p>
+   </div>
+   <div style="display:flex;gap:8px">${bookField('日付', 'date', BOOKED[0].date)}${bookField('時刻', 'time', BOOKED[0].time)}</div>
+  </div>
+ </div>
+ <div class="foot" style="gap:8px"><button class="btn L primary fillw" data-save-booking${to('06')}>${icon('calendar-clock', 20, RAISED)}この日時で予約する</button><button class="btn M secondary fillw"${to('01+')}>${icon('phone', 18)}今すぐ通話</button>${homebar()}</div>
+</div>`;
+        const flowDot = (t, l, last) => `<div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:68px"><span class="iconbtn" style="width:36px;height:36px;background:${last ? ALERT : INK}">${icon(last ? 'bell' : 'phone', 16, '#FFFFFF')}</span><span class="mono-s">${t}</span><span class="label-s muted" style="text-align:center">${l}</span></div>`;
+        const flowLine = () => `<i style="display:block;flex:1;height:2px;background:var(--line-strong);margin-top:17px"></i>`;
+        // かけなおしのルール。間隔と回数に合わせて下のプレビューを描きなおす
+        const retry = { interval: 15, count: 3 }, RETRY_MAX = { interval: 120, count: 10 }, RETRY_UNIT = { interval: '分', count: '回' };
+        const clock = m => `${Math.floor(m / 60) % 24}:${String(m % 60).padStart(2, '0')}`;
+        const retryAt = i => clock(540 + i * retry.interval);
+        const retryFlow = () => {
+            const n = retry.count, dots = n > 3 ? [0, null, n - 1] : [...Array(n).keys()];
+            return [...dots.map(i => i === null ? `<span class="label-m muted" style="margin-top:8px;padding:0 4px">…</span>` : flowDot(retryAt(i), `${i + 1}回目`)), flowDot(retryAt(n - 1), '家族に通知', 1)].join(flowLine())
+        };
+        const retryText = () => retry.count === 1 ? `9:00に1回かけて、出なければ${retryAt(0)}に家族に通知します。` : `9:00から${retry.interval}分おきに${retry.count}回かけて、出なければ${retryAt(retry.count - 1)}に家族に通知します。`;
+        const retrySummary = () => retry.count === 1 ? '1回かけて、家族に通知' : `${retry.interval}分おきに${retry.count}回かけて、家族に通知`;
+        const retryChips = (kind, opts) => `<div class="chips" data-retry="${kind}">${opts.map(v => `<button class="chip ${v === retry[kind] ? 'sel' : ''}" data-v="${v}">${v}${RETRY_UNIT[kind]}</button>`).join('')}<button class="chip" data-v="other">その他</button></div><div class="field" hidden style="min-height:48px;gap:8px"><input type="number" min="1" max="${RETRY_MAX[kind]}" inputmode="numeric" aria-label="${kind === 'interval' ? 'かけなおす間隔' : 'かける回数'}を入力" data-retry-input="${kind}"><span class="label-m" style="flex:none">${RETRY_UNIT[kind]}</span></div>`;
+        S['07'] = () => `<div class="screen">${status('10:36')}
+ <div class="content">
+  ${navBar('chevron-left', 'もどる', 'かけなおしのルール', '06')}
+  <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:20px">
+   <div style="display:flex;flex-direction:column;gap:8px"><span class="label-m">かけなおす間隔</span>${retryChips('interval', [5, 10, 15, 30])}</div>
+   <div style="display:flex;flex-direction:column;gap:8px"><span class="label-m">かける回数</span>${retryChips('count', [1, 2, 3])}</div>
+   <section class="card"><span class="label-m">朝9:00の電話に出ないとき</span>
+    <div data-retry-flow style="display:flex;align-items:flex-start">${retryFlow()}</div>
+    <p class="body-s muted" data-retry-text>${retryText()}</p>
+   </section>
+  </div>
+ </div>
+ <div class="foot"><button class="btn L primary fillw" data-save-rule${to('06')}>このルールで保存</button>${homebar()}</div>
+</div>`;
+        S['07+'] = () => `<div class="screen">${status('9:31')}${hhead('11月5日(木) 9:31 時点')}
+ <div class="hview"><div class="hcol" style="top:0">
+  <section class="nightcard" style="background:${ALERT}">
+   <div style="display:flex;gap:6px;align-items:center">${icon('phone-missed', 16, '#FFFFFF')}<span class="label-m" style="color:#fff">確認をお願いします</span></div>
+   <h3 class="title-l" style="margin-top:8px;color:#fff">電話に出ていません</h3>
+   <p class="body-m" style="margin-top:4px;color:#fff">9:00、9:15、9:30にかけましたが、応答がありませんでした。</p>
+  </section>
+  ${askCard()}
+  <section class="card"><h3 class="title-m">今日の様子</h3><p class="body-m muted">今日はまだ話せていません。</p></section>
+ </div></div>${tabs('home')}</div>`;
+
+        // ---------- Board ----------
+        const META = {
+            L1: ['ようこそ','最初の操作は「始める」に絞ります。'],
+            L2a: ['パスワードの再設定', 'L2の「パスワードを忘れた場合」から開きます。メールアドレスを入力して送ると、同じ画面に送信したことを表示し、ボタンが「ログインにもどる」に変わります。'],
+            'L2a+': ['メールの送信に失敗したとき', 'L2aで送信できなかったときの画面です。失敗したことと確認する点を色と言葉で伝えます。「もう一度送る」で送り直します。'],
+            L2: ['ログイン', 'L1の「アカウントをお持ちの方はログイン」から開きます。メールアドレスとパスワード、またはGoogleでログインします。新規登録への入口は、L1のログインと同じ大きさです。'],
+            'L2+': ['新規登録(同意前)', 'L1の「はじめる」から開きます。チェックボックスはここでは押せません。各項目を開いて内容を読み、L2cまたはL2pの「同意する」を押すとL2dに移ります。'],
+            L2c: ['利用規約を読む', '上の線で読んだ割合を示します。最後までスクロールすると「同意する」が押せるようになり、L2dに移って同意した項目にチェックが入ります。AIとの通話であることと、会話が文字で残ることを見守る方に説明する約束は、第2条に記載します。'],
+            L2p: ['プライバシーポリシーを読む', 'L2cと同じ画面構成です。何を取得し、何に使い、誰と共有するかを伝えます。体調や服薬の話は特に配慮が必要な情報なので、第4条で分けて説明します。'],
+            L2d: ['新規登録(同意後)', 'L2c、L2pの「同意する」で、該当する項目にチェックが入ります。チェックボックスは押すたびにオンとオフが切り替わります。2つともチェックされているときだけ、Googleでの登録と「登録する」が押せます。登録するとL3の電話機との同期に進みます。'],
+            L3: ['電話機との同期', '家族がアプリで準備を始め、電話機の「＃」を押し、受話器から流れた認証コードをアプリに入力して同期します。絵の中で「＃」の場所を赤い点線で示します。「同期を始める」でL3wに移ります。'],
+            L3w: ['電話機の「＃」を押す', 'アプリの準備ができた状態です。電話機の受話器を上げて「＃」を押すと、受話器から6桁の認証コードが2回流れます。準備は10分で切れます。', '認証コードを受話器で読み上げる', '電話機で「＃」を押して聞く'],
+            L3k: ['認証コードの入力', '受話器から聞こえた6桁を、画面の数字キーで入力します(モックでも押せます)。6桁そろうまで「送信」は押せません。正しければL5に移ります(モックでは送信するとL5へ)。違うときはL3kbを表示します。'],
+            'L3k+': ['認証コードが違うとき', '入力した6桁が違うときの画面です。枠を赤くし、色だけでなく言葉でも伝えます。数字キーを押すと入力し直せます。電話機の「＃」でもう一度聞き直せることも伝えます。'],
+            'L3+': ['認証コードが聞こえないとき', 'L3wとL3kの「認証コードが聞こえないとき」から開きます。聞こえないときに試すことを、簡単な順に3つ示します。'],
+            L5: ['同期完了', 'L3kで正しい認証コードを送信すると開きます。つながった電話番号を見せます。電話機の受話器からも、つながったことをアナウンスします。', 'つながったことを受話器で知らせる', '受話器を置いて、セットアップへ進む'],
+            L6: ['見守る方の名前', '入力は名前と呼び方だけです。呼び方はあとから変更できます。'],
+            L7: ['好きな話題', '話し相手として会話を弾ませるための入力です。候補を押すだけで複数選べて、もう一度押すと外せます。候補にない話題は、左の＋で入力欄を増やして書けます。入力欄が2つ以上あるときは、右上の✕で消せます。08の設定からいつでも変更できます。', '選ばれた話題で話しかける', '話題を選ぶ'],
+            L8: ['AIの声', '声を選び、再生ボタンで同じ言葉を聞き比べます。選んだ声はすべての電話で使います。あとから08の設定で変更できます。', '選ばれた声で話す', '聞き比べて声を選ぶ'],
+            T1: ['チュートリアル 直近の電話', 'L8の「はじめる」のあとに出ます。08の「チュートリアル確認」からも、もう一度見られます。画面の上を暗くして、説明する場所だけを明るく残します。どの画面からも「スキップ」で00に移れます。T2からは「戻る」で一つ前のチュートリアルに戻れます。'],
+            T2: ['チュートリアル AIに伝えてもらう', '家族がいちばん使う「AIに伝えてもらう」の場所を示します。'],
+            T3: ['チュートリアル 今日の様子', 'ホームを下にスクロールした状態で、今日の様子を示します。気になる話に印が付くことも伝えます。'],
+            T4: ['チュートリアル 通話記録 日付', '通話記録の画面に移って、過去7日間の見方と、カレンダー(04b)で日付を選べることを伝えます。'],
+            T5: ['チュートリアル 通話記録 記録', '一言のまとめ、話題の種類、通話時間、出なかった電話の残り方を伝えます。'],
+            T6: ['チュートリアル 通話記録 詳細', '詳細(05)の画面に移って、まとめと全文、時刻から発言へ移れること、まとめを直せること、録音は聴けないことを伝えます。'],
+            T7: ['チュートリアル 予約電話 確認と編集', '予約電話の画面に移って、予約の一覧と、押すと編集(06b)できることを伝えます。'],
+            T8: ['チュートリアル 予約電話 新しい予約', '新しい予約は01と同じ画面で作ること、家族が押すまで電話はかからないことを伝えます。'],
+            T9: ['チュートリアル かけなおしのルール', 'かけなおしのルール(07)の入口を示して終わります。「はじめる」で00に移ります。'],
+            '00': ['ホーム(直近の電話)', '開いて最初に、直近の会話のまとめを見せます。「AIに伝えてもらう」を押すと01に移ります。右上の歯車から田中ハナさんの設定を開きます。今日の様子は02で説明します。', '会話をまとめる', '会話を読んで、次に何をするか決める'],
+            '01': ['AIに伝えてもらう', '入力すると、AIが電話で話す通話内容の案が出ます。日時を決めて予約するのが主な操作で、日時は押すと01bで選べます。急ぐときは「今すぐ通話」を使います。06の「新しい予約」もこの画面を開きます。家族がボタンを押すまで、電話はかかりません。', '通話内容の案を出す。聞き返しに答える', '内容を決める。案を直す。予約か今すぐ通話かを選ぶ'],
+            '01b': ['日時を選ぶ', '01の「日時」を押すと開きます。日付はカレンダーで選び、今日より前の日は選べません。時刻はアラームの設定のように、時と分を上下に回して選びます(分は5分ごと)。下の「よく電話に出る時刻」を押すと、その時刻まで回ります。決定すると01の日時に反映されます。', '電話に出やすい時刻を、通話記録から示す', '日付と時刻を決める'],
+            '01a': ['AIに伝えてもらう(通話中)', '予約の電話の最中や、高齢者から電話をかけているときは、「今すぐ通話」が「通話中です」に変わり、押せなくなります。日時を決めた予約はそのままできます。'],
+            '01+': ['伝言への返答', '電話が終わると、ホームの最上部に、伝えたことと本人の返答を表示します。下にスクロールすると今日の様子も確かめられます。アプリを開くだけで、伝わったかどうかが分かります。', '伝言を伝え、返答を文字にする', '返答を読んで、必要なら連絡する'],
+            '02': ['今日の様子', '食事、睡眠、体調の3つに絞ります。答えの下に本人の言葉を添え、気になる話は色だけでなく言葉でも示します。7日間で電話に出たかと話した分数を、1つのグラフで読めるようにします。出なかった日は棒を出さず、記号と「不在」で示します。', '会話から3項目を取り出す', '受診や連絡が必要か判断する'],
+            '08': ['田中ハナさんの設定', 'ホーム右上の歯車から開きます。お名前と呼び方はこの画面で直接書き換えます。話題は08b、声は08cに移って変更します。電話機とかけなおしのルールもここから変更できます。「チュートリアル確認」を押すと、T1からチュートリアルがもう一度流れます。一番下の「アカウント情報」から08eに移ります。'],
+            '08b': ['好きな話題の変更', 'L7と同じ画面です。「保存する」で08に戻り、選んだ話題が08に表示されます。'],
+            '08c': ['AIの声の変更', 'L8と同じ画面です。「保存する」で08に戻り、選んだ声が08に表示されます。'],
+            '08d': ['ログアウト', '08eの一番下の「ログアウト」から開きます。押し間違えてもすぐに抜けないよう、確認の画面をはさみます。ログアウトしても電話と記録は止まらないことを伝えます。「ログアウトする」でL2のログイン画面に移ります。'],
+            '08e': ['アカウント情報', '08の一番下の「アカウント情報」から開きます。アプリを使う家族自身の情報です。お名前はこの画面で直接書き換えます。パスワードを押すと、L2aと同じ再設定の画面に移ります。メールアドレス、ログイン方法、登録日は確認のための表示です。一番下の「ログアウト」から08dに移ります。'],
+            '04': ['通話記録', '上部の「過去7日間」は横にスクロールして前の日も見られ、タップすると04bのカレンダーが開きます。下には日付ごとに、内容を一言でまとめて並べ、タップすると05の詳細に移動します。出なかった電話も隠さず残します。', '一言にまとめる', 'どの記録を読むか選ぶ'],
+            '04+': ['カレンダーで日付を選ぶ', '04の「過去7日間」をタップすると開きます。電話に出た日と不在の日を印で示し、日付を選ぶとその日の記録に移動します。今日より先の日付は選べません。'],
+            '04c': ['スクロールしたとき', '記録を下へスクロールしても、ミニカレンダーは上に残ります。「通話記録」の見出しだけが流れて、記録を読む範囲を広げます。カレンダーの選択は、いま見ている日付に合わせて動きます。'],
+            '05': ['通話記録の詳細', '上段に詳細なまとめ、下段に会話の内容を置きます。まとめの時刻から元の発言に移動でき、AIの要約をその場で確かめられます。アプリで見られるのは文字の記録だけで、録音は聴けません。下のタブはほかの画面と同じく残します。', 'まとめて、根拠の発言を示す', 'まとめの間違いを直す'],
+            '06': ['予約', '予約している電話を確かめる画面です。項目を押すと06bで内容を編集できます。新しい予約は01と同じ画面で作るので、入力の場所が2つに分かれません。かけなおしのルールもここから開きます。'],
+            '06b': ['予約の編集', '01と同じ構成で、06で押した予約の内容が入った状態で開きます。伝えたいことと日時を変更でき、「この日時で予約する」で06の表示に反映されます。急ぐときは「今すぐ通話」も使えます。'],
+            '07': ['かけなおしのルール', '間隔と回数を押すと、下の流れがその場で変わり、何時に通知が来るかを保存する前に確かめられます。「その他」を押すと数字を入力できます。', '決めない。ルールどおりに動く', '間隔と回数を決める'],
+            '07+': ['電話に出なかったとき', '07のルールを超えると、ホームの最上部がこの表示に変わります。かけた時刻と、今日の様子がまだ分からないことを伝えます。', '決めない。事実を知らせる', '連絡するかどうか、誰にするかを決める'],
+        };
+        const cell = n => { const m = META[n]; const label = n.endsWith('+') ? n.replace('+', 'b') : n; return `<div class="cell" data-cell="${n}"><div class="cell-title"><span class="mono-m muted">${label}</span><span class="title-m">${m[0]}</span></div>${S[n]()}<div class="why"><p class="body-s note">${m[1]}</p>${m[2] ? `<dl><dt>AI</dt><dd>${m[2]}</dd><dt>人</dt><dd>${m[3]}</dd></dl>` : ''}</div></div>` };
+        const flow = (head, sub, ns) => `<section class="flow"><div class="flow-head"><h2 class="title-l">${head}</h2><span class="body-m muted">${sub}</span></div><div class="row">${ns.map(cell).join('')}</div></section>`;
+        const swatch = (n, h) => `<div class="swatch"><i style="background:${h}"></i><span class="label-s">${n}</span><span class="mono-s muted">${h}</span></div>`;
+        const group = t => `<tr class="group"><td colspan="3">${t}</td></tr>`;
+        const crit = (a, b, c) => `<tr><td>${a}</td><td>${b}</td><td>${c}</td></tr>`;
+        document.getElementById('board').innerHTML = `
+<header class="intro">
+ <div class="intro-main"><h1 class="display">かぞくAI</h1><p class="body-m">管理者（離れて暮らす家族）が高齢者の様子を確認するためのアプリのUI案です。親の固定電話にAIが電話をかけ、その内容を家族に届けます。人物と会話はすべて架空の例です。</p></div>
+ <div class="principles">
+  <div class="principle"><span class="label-l">決めるのは家族</span><span class="body-s muted">AIが見守りのサポートをしますが、伝える内容、時間、連絡の判断は家族が行います。</span></div>
+  <div class="principle"><span class="label-l">主な機能</span><span class="body-s muted">コール、電話越しの会話、会話ログの保存の3種類です。簡単な操作を心がけています。</span></div>
+  <div class="principle"><span class="label-l">高齢者は電話に出るだけ</span><span class="body-s muted">高齢者は受話器から会話をするだけなので、細かい操作を覚える必要はありません。</span></div>
+ </div>
+</header>
+${flow('1. ログイン前', 'はじめて開いたとき、ログイン', ['L1', 'L2', 'L2a'])}
+${flow('1. ログイン前(続き)', '再設定メールの失敗、新規登録', ['L2a+', 'L2+', 'L2c'])}
+${flow('1. ログイン前(続き)', '規約に1つずつ同意すると登録できる', ['L2p', 'L2d'])}
+${flow('2. 電話機と同期', 'アプリで準備を始め、電話機の「＃」を押して、受話器から流れた認証コードを入力する', ['L3', 'L3w', 'L3k'])}
+${flow('2. 電話機と同期(続き)', 'つながると受話器からもお知らせする。うまくいかないとき', ['L5', 'L3k+', 'L3+'])}
+${flow('3. セットアップ', '見守る方のことを登録する', ['L6', 'L7', 'L8'])}
+${flow('4. ホーム画面', 'はじめて開いたときのチュートリアル', ['T1', 'T2', 'T3'])}
+${flow('4. ホーム画面(続き)', 'チュートリアル(続き) 通話記録の機能', ['T4', 'T5', 'T6'])}
+${flow('4. ホーム画面(続き)', 'チュートリアル(続き) 予約電話の機能', ['T7', 'T8', 'T9'])}
+${flow('4. ホーム画面(続き)', '様子を知って、伝える', ['00', '01', '01b'])}
+${flow('4. ホーム画面(続き)', '通話中に伝えたいとき', ['01a'])}
+${flow('4. ホーム画面(続き)', '伝言への返答、今日の様子、電話に出なかったとき', ['01+', '02', '07+'])}
+${flow('4. ホーム画面(続き)', '田中ハナさんの設定', ['08', '08b', '08c'])}
+${flow('4. ホーム画面(続き)', 'アカウント情報、ログアウト', ['08e', '08d'])}
+${flow('5. 通話記録', '日付で探して、一言で追う', ['04', '04+', '04c'])}
+${flow('5. 通話記録(続き)', '必要なら全文を読む', ['05'])}
+${flow('6. 予約電話', '決まった時間に電話する、出ないときに備える', ['06', '06b', '07'])}
+<section class="found"><div class="flow-head"><h2 class="title-l">Foundations</h2><span class="body-m muted">色と文字</span></div>
+ <div class="found-grid">
+  <div class="swatches">
+   ${[['paper/base', '#F5F5F5'], ['paper/raised', '#FFFFFF'], ['paper/sunken', '#E2E3E6'], ['ink/primary', '#1A1A1A'], ['ink/secondary', '#4D5359'], ['night/base', '#1F2328'], ['night/raised', '#2D3238'], ['state/ok', '#35A16B'], ['state/ok-soft', '#D5F5E3'], ['state/care', '#FF9900'], ['state/care-soft', '#FFFF99'], ['state/alert', '#DC3800'], ['state/alert-soft', '#FFE3E3'], ['speaker/ai', '#0041FF'], ['speaker/parent', '#663300']].map(([n, h]) => swatch(n, h)).join('')}
+  </div>
+  <div class="spec">
+   <div><span class="mono-s muted">BIZ UDPGothic / 画面の文字、会話の言葉</span><span class="title-l">親の様子を、ひと目で確かめる</span></div>
+   <div><span class="mono-s muted">BIZ UDPGothic / 時刻と分数</span><span class="mono-m">9:02　6分12秒　03-0000-0000</span></div>
+  </div>
+ </div>
+</section>`;
+        // ホームの02と03は、同じ画面をスクロールした状態として表示する
+        const placeHome = () => document.querySelectorAll('.hcol[data-scroll]').forEach(col => {
+            const mode = col.dataset.scroll, view = col.parentElement, tabH = 91;
+            // 今日の様子を上に寄せる。ただし中身の終わりより下までは動かさない
+            if (mode === 'today') col.style.top = `${Math.min(0, Math.max(view.clientHeight - tabH - col.offsetHeight, 8 - col.querySelector('[data-part="today"]').offsetTop))}px`;
+        });
+        placeHome();
+        // T1〜T3: 説明する場所に合わせて、明るい枠と説明の位置を決める
+        const placeTut = () => document.querySelectorAll('.tut').forEach(el => {
+            const scr = el.closest('.screen'), target = scr.querySelector(el.dataset.tut);
+            if (!target) return;
+            const k = scr.offsetWidth / scr.getBoundingClientRect().width, sr = scr.getBoundingClientRect(), tr = target.getBoundingClientRect(), pad = 6;
+            const top = (tr.top - sr.top) * k - pad, left = (tr.left - sr.left) * k - pad, w = tr.width * k + pad * 2, h = tr.height * k + pad * 2;
+            Object.assign(el.querySelector('.tut-spot').style, { top: `${top}px`, left: `${left}px`, width: `${w}px`, height: `${h}px` });
+            const tip = el.querySelector('.tut-tip'), below = top + h + 12;
+            if (below + tip.offsetHeight <= scr.offsetHeight - 40) { tip.style.bottom = ''; tip.style.top = `${below}px` } else { tip.style.top = ''; tip.style.bottom = `${scr.offsetHeight - top + 12}px` }
+            el.classList.add('placed');
+        });
+        placeTut();
+        // 01b: 回転式の時刻。止まった位置の数字を選んだことにする
+        const ITEM_H = 36;
+        const whenValue = sh => [dayLabel(+sh.querySelector('[data-day].sel').dataset.day), `${sh.querySelector('[data-col="h"] .on').dataset.v}:${sh.querySelector('[data-col="m"] .on').dataset.v}`];
+        const whenLabel = sh => { sh.querySelector('[data-when-label]').textContent = whenValue(sh).join(' ') };
+        const markWheel = col => { const i = Math.max(0, Math.min(col.children.length - 1, Math.round(col.scrollTop / ITEM_H))); if (col.dataset.target !== undefined) { if (+col.dataset.target !== i) return; delete col.dataset.target } [...col.children].forEach((b, j) => { b.classList.toggle('on', j === i); b.setAttribute('aria-selected', j === i) }); whenLabel(col.closest('[data-when]')) };
+        // 押したらすぐに値を決め、回る動きはあとから追いつく
+        const spinTo = (col, v, smooth) => { const i = [...col.children].findIndex(b => b.dataset.v === v); if (i < 0) return; col.dataset.target = i; [...col.children].forEach((b, j) => { b.classList.toggle('on', j === i); b.setAttribute('aria-selected', j === i) }); whenLabel(col.closest('[data-when]')); col.scrollTo({ top: i * ITEM_H, behavior: smooth ? 'smooth' : 'auto' }) };
+        document.querySelectorAll('.wheel-col').forEach(col => {
+            spinTo(col, col.querySelector('.on').dataset.v, false); delete col.dataset.target;
+            col.addEventListener('wheel', () => { delete col.dataset.target }, { passive: true });
+            col.addEventListener('touchstart', () => { delete col.dataset.target }, { passive: true });
+            col.addEventListener('scroll', () => markWheel(col), { passive: true });
+            // マウスでは縦にドラッグして回せる
+            let sy = null, st = 0, moved = false;
+            col.addEventListener('pointerdown', e => { moved = false; delete col.dataset.target; if (e.pointerType !== 'mouse') return; sy = e.clientY; st = col.scrollTop; col.style.scrollSnapType = 'none' });
+            col.addEventListener('pointermove', e => { if (sy === null) return; const d = e.clientY - sy; if (Math.abs(d) > 4) moved = true; if (moved) col.scrollTop = st - d });
+            window.addEventListener('pointerup', () => { if (sy === null) return; sy = null; col.style.scrollSnapType = ''; spinTo(col, col.children[Math.round(col.scrollTop / ITEM_H)].dataset.v, true) });
+            col.addEventListener('click', e => { if (moved) { e.stopPropagation(); moved = false } }, true);
+        });
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { placeHome(); placeTut() });
+
+        // ---------- 操作 ----------
+        const goTo = n => { const c = document.querySelector(`[data-cell="${n}"]`); if (!c) return; c.scrollIntoView({ behavior: 'smooth', block: 'center' }); c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash') };
+        const renderRetry = () => { document.querySelector('[data-retry-flow]').innerHTML = retryFlow(); document.querySelector('[data-retry-text]').textContent = retryText() };
+        const setRetry = (kind, raw) => { const v = Number(raw); if (Number.isInteger(v) && v >= 1 && v <= RETRY_MAX[kind]) { retry[kind] = v; renderRetry() } };
+        // L7: 押した候補と、入力した話題を合わせて数える
+        const syncTopicCount = box => { const typed = [...box.querySelectorAll('[data-topic-input]')].filter(i => i.value.trim()).length; box.querySelector('[data-topic-count]').textContent = `${box.querySelectorAll('.topic[aria-pressed="true"]').length + typed}つ選択中` };
+        let editingBooking = 0;
+        let agreeFlowStarted = false;
+        // L2d: 2つともチェックされているときだけ登録できる
+        const syncRegister = () => { const c = document.querySelector('[data-cell="L2d"]'), all = [...c.querySelectorAll('.agreebox')].every(b => b.getAttribute('aria-checked') === 'true'); c.querySelectorAll('[data-register]').forEach(b => { b.disabled = !all; if (all) b.removeAttribute('aria-disabled'); else b.setAttribute('aria-disabled', 'true') }) };
+        document.addEventListener('click', e => {
+            const t = e.target;
+            const play = t.closest('[data-play]');
+            if (play) { const stop = play.dataset.playing === '1'; document.querySelectorAll('[data-play]').forEach(b => { b.dataset.playing = '0'; b.innerHTML = icon('play', 18) }); if (!stop) { play.dataset.playing = '1'; play.innerHTML = icon('square', 18) } }
+            const voice = t.closest('.voice');
+            if (voice) voice.parentElement.querySelectorAll('.voice').forEach(v => v.setAttribute('aria-checked', v === voice ? 'true' : 'false'));
+            const topicBtn = t.closest('.topic');
+            if (topicBtn) { topicBtn.setAttribute('aria-pressed', topicBtn.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); const box = topicBtn.closest('.screen'); syncTopicCount(box) }
+            const removeTopic = t.closest('[data-remove-topic]');
+            if (removeTopic) { const box = removeTopic.closest('.screen'); removeTopic.parentElement.remove(); syncTopicCount(box) }
+            const addTopic = t.closest('[data-add-topic]');
+            if (addTopic) { const list = addTopic.parentElement.querySelector('[data-topic-inputs]'); list.insertAdjacentHTML('beforeend', topicInput('ほかの話題を入力')); const scroller = addTopic.closest('[data-topic-scroll]'); list.lastElementChild.querySelector('input').focus({ preventScroll: true }); scroller.scrollTop = scroller.scrollHeight }
+            const chip = t.closest('[data-retry] .chip');
+            if (chip) { const row = chip.parentElement, kind = row.dataset.retry, field = row.nextElementSibling, other = chip.dataset.v === 'other'; row.querySelectorAll('.chip').forEach(c => c.classList.toggle('sel', c === chip)); field.hidden = !other; if (other) { const inp = field.querySelector('input'); inp.focus(); setRetry(kind, inp.value) } else setRetry(kind, chip.dataset.v) }
+            if (t.closest('[data-save-rule]')) document.querySelectorAll('[data-rule-summary]').forEach(el => { el.textContent = retrySummary() });
+            if (t.closest('[data-save-topics]')) { const box = t.closest('.screen'), names = [...box.querySelectorAll('.topic[aria-pressed="true"]')].map(b => b.textContent.trim()).concat([...box.querySelectorAll('[data-topic-input]')].map(i => i.value.trim()).filter(Boolean)); document.querySelector('[data-topic-summary]').textContent = names.join('、') || '未選択' }
+            if (t.closest('[data-save-voice]')) document.querySelector('[data-voice-summary]').textContent = t.closest('.screen').querySelector('.voice[aria-checked="true"] .label-l').textContent;
+            const box = t.closest('.agreebox');
+            if (box) {
+                // L2d: 押すたびにオンとオフが切り替わる(L2bは無効なのでここに来ない)
+                agreeFlowStarted = true;
+                box.setAttribute('aria-checked', box.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+                syncRegister();
+                return;
+            }
+            const agreeBtn = t.closest('[data-agree]');
+            if (agreeBtn) {
+                const boxes = [...document.querySelectorAll('[data-cell="L2d"] .agreebox')];
+                // L2dは最初「同意後」の見本として両方チェック済み。操作を始めたら実際の状態に切り替える
+                if (!agreeFlowStarted) { agreeFlowStarted = true; boxes.forEach(b => b.setAttribute('aria-checked', 'false')) }
+                boxes.find(b => b.dataset.doc === agreeBtn.dataset.agree).setAttribute('aria-checked', 'true');
+                syncRegister();
+                agreeBtn.dataset.go = 'L2d';
+            }
+            const resetSend = t.closest('[data-reset-send]');
+            if (resetSend) {
+                // 送信後は同じ画面に結果を出し、ボタンはログインへ戻る操作に変える
+                resetSend.closest('.screen').querySelector('[data-reset-done]').style.display = 'flex';
+                resetSend.removeAttribute('data-reset-send');
+                resetSend.textContent = 'ログインにもどる';
+                resetSend.dataset.go = 'L2';
+                return;
+            }
+            const bookedItem = t.closest('[data-booked]');
+            if (bookedItem) {
+                // 押した予約の内容を06bに入れる
+                editingBooking = Number(bookedItem.dataset.booked);
+                const b = BOOKED[editingBooking], form = document.querySelector('[data-cell="06b"]');
+                form.querySelectorAll('[data-book]').forEach(i => { i.value = b[i.dataset.book] });
+                form.querySelector('[data-book-script]').innerHTML = b.script;
+            }
+            if (t.closest('[data-save-booking]')) {
+                // 保存した内容を06の行に反映する。空欄は元の値のまま
+                const b = BOOKED[editingBooking], form = document.querySelector('[data-cell="06b"]');
+                form.querySelectorAll('[data-book]').forEach(i => { b[i.dataset.book] = i.value.trim() || b[i.dataset.book] });
+                const row = document.querySelector(`[data-booked="${editingBooking}"]`);
+                row.querySelector('[data-b-when]').textContent = `${b.date} ${b.time}`;
+                row.querySelector('[data-b-content]').textContent = b.content;
+            }
+            const single = t.closest('[data-single] .chip');
+            if (single) single.parentElement.querySelectorAll('.chip').forEach(c => c.classList.toggle('sel', c === single));
+            // 01b: 日付はカレンダー、時刻はアラームのような回転式で選ぶ。決定すると01の日付と時刻に反映する
+            const whenDay = t.closest('[data-when] [data-day]');
+            if (whenDay && !whenDay.disabled) { const sh = whenDay.closest('[data-when]'); sh.querySelectorAll('[data-day]').forEach(b => b.classList.toggle('sel', b === whenDay)); whenLabel(sh) }
+            const wheelItem = t.closest('.wheel-col button');
+            if (wheelItem) spinTo(wheelItem.parentElement, wheelItem.dataset.v, true);
+            const quick = t.closest('[data-quick]');
+            if (quick) { const sh = quick.closest('[data-when]'), [h, m] = quick.dataset.quick.split(':'); spinTo(sh.querySelector('[data-col="h"]'), h, true); spinTo(sh.querySelector('[data-col="m"]'), m, true) }
+            if (t.closest('[data-when-done]')) {
+                const sh = t.closest('[data-when]'), [d, tm] = whenValue(sh);
+                document.querySelectorAll('[data-pick="date"]').forEach(el => { el.textContent = d });
+                document.querySelectorAll('[data-pick="time"]').forEach(el => { el.textContent = tm });
+            }
+            // L3k: 数字キーで認証コードを入力する。6桁そろうと「送信」が押せる
+            const key = t.closest('[data-key]');
+            if (key) {
+                const scr = key.closest('.screen'), code = scr.querySelector('[data-code]');
+                let v = code.dataset.code;
+                if (code.classList.contains('err')) { code.classList.remove('err'); v = ''; const m = scr.querySelector('[data-code-err]'); if (m) m.style.display = 'none' }
+                v = key.dataset.key === 'del' ? v.slice(0, -1) : (v + key.dataset.key).slice(0, 6);
+                code.dataset.code = v;
+                [...code.children].forEach((c, i) => { c.textContent = v[i] || ''; c.classList.toggle('cur', i === v.length) });
+                const send = scr.querySelector('[data-send]'); send.disabled = v.length < 6;
+                if (send.disabled) send.setAttribute('aria-disabled', 'true'); else send.removeAttribute('aria-disabled');
+            }
+            const go = t.closest('[data-go]');
+            if (go && go.dataset.go === '07') { const from = go.closest('[data-cell]').dataset.cell; document.querySelectorAll('[data-cell="07"] [data-go]').forEach(b => { b.dataset.go = from }) }
+            if (go && !go.disabled) goTo(go.dataset.go);
+        });
+        // 規約とポリシー: 読んだ割合を線に出し、最後まで読むと「同意する」を押せるようにする
+        document.querySelectorAll('[data-legal]').forEach(el => {
+            const box = el.closest('.screen'), bar = box.querySelector('[data-legal-bar]'), btn = box.querySelector('.foot button');
+            const update = () => {
+                const seen = el.scrollTop + el.clientHeight; bar.style.width = `${Math.min(100, seen / el.scrollHeight * 100)}%`; bar.parentElement.setAttribute('aria-valuenow', Math.round(Math.min(100, seen / el.scrollHeight * 100)));
+                if (btn.disabled && seen >= el.scrollHeight - 4) { btn.disabled = false; btn.removeAttribute('aria-disabled'); btn.removeAttribute('style'); btn.classList.add('primary'); btn.dataset.agree = el.closest('[data-cell]').dataset.cell }
+            };
+            el.addEventListener('scroll', update); update();
+            if (document.fonts && document.fonts.ready) document.fonts.ready.then(update);
+        });
+        document.addEventListener('input', e => { if (e.target.matches('[data-topic-input]')) syncTopicCount(e.target.closest('.screen')); const k = e.target.dataset && e.target.dataset.retryInput; if (k) setRetry(k, e.target.value) });
+        // 過去7日間: 最新の日を右端に置き、ドラッグで前の日へ。ドラッグ後はタップ扱いにしない
+        document.querySelectorAll('.mini-days').forEach(el => {
+            el.scrollLeft = el.scrollWidth;
+            let startX = null, startL = 0, moved = false;
+            el.addEventListener('pointerdown', e => { moved = false; if (e.pointerType !== 'mouse') return; startX = e.clientX; startL = el.scrollLeft; el.style.scrollSnapType = 'none' });
+            el.addEventListener('pointermove', e => { if (startX === null) return; const d = e.clientX - startX; if (Math.abs(d) > 5) moved = true; if (moved) el.scrollLeft = startL - d });
+            window.addEventListener('pointerup', () => { if (startX === null) return; startX = null; el.style.scrollSnapType = '' });
+            el.addEventListener('click', e => { if (moved) { e.stopPropagation(); moved = false } }, true);
+        });
+    </script>
+</body>
+
+</html>

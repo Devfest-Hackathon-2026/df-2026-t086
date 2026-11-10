@@ -1,0 +1,383 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:kazokuai/design/app_colors.dart';
+import 'package:kazokuai/design/app_icon.dart';
+import 'package:kazokuai/design/widgets/app_avatar.dart';
+import 'package:kazokuai/design/widgets/app_button.dart';
+import 'package:kazokuai/design/widgets/app_icon_button.dart';
+import 'package:kazokuai/features/home/ask_card.dart';
+import 'package:kazokuai/features/home/home_data.dart';
+import 'package:kazokuai/features/home/home_format.dart';
+import 'package:kazokuai/features/home/home_header.dart';
+import 'package:kazokuai/features/home/home_screen.dart';
+import 'package:kazokuai/features/home/recent_call_card.dart';
+import 'package:kazokuai/features/home/reply_card.dart';
+import 'package:kazokuai/features/home/sample_home_data.dart';
+
+import '../../support/layout_matrix.dart';
+
+Widget buildHeader({
+  WatchedPerson? person,
+  DateTime? now,
+  VoidCallback? onOpenSettings,
+}) => HomeHeader(
+  person: person ?? sampleHomeData.person,
+  now: now ?? sampleHomeData.now,
+  onOpenSettings: onOpenSettings ?? () {},
+);
+
+Widget buildRecentCard({
+  Call? call,
+  DateTime? now,
+  VoidCallback? onOpenConversation,
+}) => RecentCallCard(
+  call: call ?? sampleHomeData.latestCall,
+  now: now ?? sampleHomeData.now,
+  onOpenConversation: onOpenConversation ?? () {},
+);
+
+// 右のラベルが一番長くなる形。12月25日 19:02 ・ 120分
+Widget buildLongStampRecentCard() => buildRecentCard(
+  call: Call(
+    startedAt: DateTime(2026, 12, 25, 19, 2),
+    duration: const Duration(minutes: 120),
+    summary: sampleHomeData.latestCall.summary,
+  ),
+  now: DateTime(2026, 12, 27),
+);
+
+// ヘッダーは自分で左右の余白を持つので、pumpInLayout を使わず画面の幅で置く
+Future<void> pumpHeader(
+  WidgetTester tester,
+  LayoutCase layout,
+  Widget header,
+) => pumpScreenInLayout(tester, layout, Scaffold(body: header));
+
+const standardLayout = LayoutCase(393, 1.0);
+
+void main() {
+  group('overflow', () {
+    testEachLayout('ヘッダー', (tester, layout) async {
+      await pumpHeader(tester, layout, buildHeader());
+    });
+
+    testEachLayout('直近の電話のカード', (tester, layout) async {
+      await pumpInLayout(tester, layout, buildRecentCard());
+    });
+
+    testEachLayout('直近の電話のカード(日時の文字が長いとき)', (tester, layout) async {
+      await pumpInLayout(tester, layout, buildLongStampRecentCard());
+    });
+
+    testEachLayout('返答のカード', (tester, layout) async {
+      await pumpInLayout(
+        tester,
+        layout,
+        ReplyCard(
+          callName: 'とてもながい呼び方のハナさん',
+          now: DateTime(2026, 12, 27),
+          reply: Reply(
+            told: '金曜の通院は、朝10時にお迎えに来ると、くり返して伝えました。',
+            text: 'わかったよ。玄関で待ってるね。遅れてもそこにいるから、そのまま来てね。',
+            saidAt: DateTime(2026, 12, 25, 19, 2),
+          ),
+        ),
+      );
+    });
+
+    testEachLayout('AIに伝えてもらうのカード', (tester, layout) async {
+      await pumpInLayout(tester, layout, AskCard(onOpenAsk: () {}));
+    });
+
+    testEachLayout('ホーム画面', (tester, layout) async {
+      await pumpScreenInLayout(
+        tester,
+        layout,
+        Scaffold(body: HomeScreen(data: sampleHomeData)),
+      );
+
+      expect(find.byType(HomeHeader), findsOneWidget);
+      expect(find.byType(RecentCallCard), findsOneWidget);
+      expect(find.byType(AskCard), findsOneWidget);
+      expect(find.text('7日間の電話'), findsNothing);
+    });
+  });
+
+  group('ヘッダー', () {
+    testWidgets('サンプルデータから文字を作る', (tester) async {
+      await pumpHeader(tester, standardLayout, buildHeader());
+
+      expect(find.text('ハ'), findsOneWidget);
+      expect(find.text('田中ハナさん'), findsOneWidget);
+      expect(find.text('11月5日(木) 10:24 時点'), findsOneWidget);
+    });
+
+    testWidgets('別のデータなら別の文字になる', (tester) async {
+      await pumpHeader(
+        tester,
+        standardLayout,
+        buildHeader(
+          person: const WatchedPerson(
+            name: '佐藤タロウ',
+            callName: 'タロウさん',
+            initial: 'タ',
+          ),
+          now: DateTime(2026, 12, 7, 8, 5),
+        ),
+      );
+
+      expect(find.text('タ'), findsOneWidget);
+      expect(find.text('佐藤タロウさん'), findsOneWidget);
+      expect(find.text('12月7日(月) 8:05 時点'), findsOneWidget);
+    });
+
+    testWidgets('アバターの色は話し手の親の色になる', (tester) async {
+      await pumpHeader(tester, standardLayout, buildHeader());
+
+      expect(
+        tester.widget<AppAvatar>(find.byType(AppAvatar)).color,
+        AppColors.speakerParent,
+      );
+    });
+
+    testWidgets('高さは最小で 60 になる', (tester) async {
+      await pumpHeader(tester, standardLayout, buildHeader());
+
+      expect(tester.getSize(find.byType(HomeHeader)).height, 60);
+    });
+
+    testWidgets('文字が増えると、高さは 60 を超えて伸びる', (tester) async {
+      await pumpHeader(tester, const LayoutCase(360, 1.3), buildHeader());
+
+      expect(tester.getSize(find.byType(HomeHeader)).height, greaterThan(60));
+    });
+
+    testWidgets('設定の歯車は名前で読み上げ、押すと onOpenSettings を呼ぶ', (tester) async {
+      var count = 0;
+      await pumpHeader(
+        tester,
+        standardLayout,
+        buildHeader(onOpenSettings: () => count++),
+      );
+
+      expect(
+        tester.widget<AppIconButton>(find.byType(AppIconButton)).icon,
+        AppIcons.settings,
+      );
+      await tester.tap(find.bySemanticsLabel('田中ハナさんの設定'));
+
+      expect(count, 1);
+    });
+
+    testWidgets('別の名前なら設定の読み上げも変わる', (tester) async {
+      await pumpHeader(
+        tester,
+        standardLayout,
+        buildHeader(
+          person: const WatchedPerson(
+            name: '佐藤タロウ',
+            callName: 'タロウさん',
+            initial: 'タ',
+          ),
+        ),
+      );
+
+      expect(find.bySemanticsLabel('佐藤タロウさんの設定'), findsOneWidget);
+    });
+  });
+
+  group('直近の電話のカード', () {
+    testWidgets('サンプルデータから文字を作る', (tester) async {
+      await pumpInLayout(tester, standardLayout, buildRecentCard());
+
+      final summary = sampleHomeData.latestCall.summary;
+      expect(find.text('直近の電話'), findsOneWidget);
+      expect(find.text('今日 9:02 ・ 6分'), findsOneWidget);
+      expect(find.text('Geminiのまとめ'), findsNothing);
+      expect(find.text(summary.headline), findsOneWidget);
+      expect(find.text('「昨日の夕方から膝が痛くてね。\n階段がつらいの。」'), findsNothing);
+      expect(find.text('9:03'), findsNothing);
+      expect(find.text('会話を見る'), findsOneWidget);
+    });
+
+    testWidgets('別の日の電話は月日で書く', (tester) async {
+      await pumpInLayout(
+        tester,
+        standardLayout,
+        buildRecentCard(now: DateTime(2026, 11, 7, 8)),
+      );
+
+      expect(find.text('11月5日 9:02 ・ 6分'), findsOneWidget);
+      expect(find.textContaining('今日'), findsNothing);
+    });
+
+    testWidgets('別のデータなら別の文字になる', (tester) async {
+      await pumpInLayout(
+        tester,
+        standardLayout,
+        buildRecentCard(
+          call: Call(
+            startedAt: DateTime(2026, 11, 5, 18, 30),
+            duration: const Duration(minutes: 12, seconds: 40),
+            summary: const CallSummary(
+              headline: '夕方に散歩をしたそうです。',
+              conditions: [],
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('今日 18:30 ・ 12分'), findsOneWidget);
+      expect(find.text('夕方に散歩をしたそうです。'), findsOneWidget);
+      expect(find.text('「今日は風が気持ちよかった。」'), findsNothing);
+    });
+
+    testWidgets('間隔はモックの margin-top と同じになる', (tester) async {
+      await pumpInLayout(tester, standardLayout, buildRecentCard());
+
+      final summary = sampleHomeData.latestCall.summary;
+      final title = tester.getRect(find.text('直近の電話'));
+      final headline = tester.getRect(find.text(summary.headline));
+      final button = tester.getRect(find.byType(AppButton));
+
+      expect(headline.top - title.bottom, 12);
+      expect(button.top - headline.bottom, 16);
+    });
+
+    testWidgets('ボタンは light の M で、幅いっぱいに広がる', (tester) async {
+      await pumpInLayout(tester, standardLayout, buildRecentCard());
+
+      final finder = find.byType(AppButton);
+      final button = tester.widget<AppButton>(finder);
+      expect(button.variant, AppButtonVariant.light);
+      expect(button.size, AppButtonSize.m);
+      expect(button.trailingIcon, AppIcons.chevronRight);
+      // 画面の余白 16 とカードの余白 20 を左右で引く
+      expect(tester.getSize(finder).width, 393 - 72);
+    });
+
+    testWidgets('会話を見るで onOpenConversation を呼ぶ', (tester) async {
+      var count = 0;
+      await pumpInLayout(
+        tester,
+        standardLayout,
+        buildRecentCard(onOpenConversation: () => count++),
+      );
+
+      await tester.tap(find.text('会話を見る'));
+
+      expect(count, 1);
+    });
+  });
+
+  group('AIに伝えてもらうのカード', () {
+    testWidgets('見出しとシェブロンだけで、入力欄と通話ボタンはない', (tester) async {
+      await pumpInLayout(tester, standardLayout, AskCard(onOpenAsk: () {}));
+
+      expect(find.text('AIに伝えてもらう'), findsOneWidget);
+      expect(find.text('予約もできます'), findsNothing);
+      expect(find.text('伝えたいことを入力'), findsNothing);
+      expect(find.text('通話'), findsNothing);
+
+      final icon = tester.widget<AppIcon>(find.byType(AppIcon));
+      expect(icon.icon, AppIcons.chevronRight);
+      expect(icon.size, 20);
+      expect(icon.color, AppColors.inkSecondary);
+    });
+
+    testWidgets('カードを押すと onOpenAsk を呼ぶ', (tester) async {
+      var count = 0;
+      await pumpInLayout(
+        tester,
+        standardLayout,
+        AskCard(onOpenAsk: () => count++),
+      );
+
+      await tester.tap(find.text('AIに伝えてもらう'));
+
+      expect(count, 1);
+    });
+
+    testWidgets('読み上げは押せる「AIに伝えてもらう」', (tester) async {
+      final handle = tester.ensureSemantics();
+      await pumpInLayout(tester, standardLayout, AskCard(onOpenAsk: () {}));
+
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('AIに伝えてもらう')),
+        isSemantics(
+          label: 'AIに伝えてもらう',
+          isButton: true,
+          isEnabled: true,
+          hasEnabledState: true,
+          hasTapAction: true,
+        ),
+      );
+      handle.dispose();
+    });
+  });
+
+  group('見出しと右のラベルの行', () {
+    testWidgets('直近の電話の行も、入らないときは折り返す', (tester) async {
+      await pumpInLayout(
+        tester,
+        const LayoutCase(360, 1.3),
+        buildLongStampRecentCard(),
+      );
+
+      final title = tester.getRect(find.text('直近の電話'));
+      final label = tester.getRect(find.text('12月25日 19:02 ・ 120分'));
+      expect(label.top, greaterThanOrEqualTo(title.bottom));
+    });
+  });
+
+  testEachLayout('押せる領域はどれも 44 以上になる', (tester, layout) async {
+    await pumpScreenInLayout(
+      tester,
+      layout,
+      Scaffold(body: HomeScreen(data: sampleHomeData)),
+    );
+
+    final finders = [
+      find.byType(HomeHeader),
+      find.byType(RecentCallCard),
+      find.byType(AskCard),
+    ];
+    for (final parent in finders) {
+      final pressables = find.descendant(
+        of: parent,
+        matching: find.byType(InkWell),
+      );
+      expect(pressables, findsWidgets);
+      for (final element in pressables.evaluate()) {
+        final size = (element.renderObject! as RenderBox).size;
+        expect(size.width, greaterThanOrEqualTo(44));
+        expect(size.height, greaterThanOrEqualTo(44));
+      }
+    }
+  });
+
+  group('formatRelativeDay', () {
+    final startedAt = DateTime(2026, 11, 5, 9, 2);
+
+    test('同じ日なら今日と書く', () {
+      expect(formatRelativeDay(startedAt, DateTime(2026, 11, 5, 23, 59)), '今日');
+      expect(formatRelativeDay(startedAt, DateTime(2026, 11, 5)), '今日');
+    });
+
+    test('日が変われば、24 時間以内でも昨日と書く', () {
+      expect(
+        formatRelativeDay(DateTime(2026, 11, 4, 23, 59), DateTime(2026, 11, 5)),
+        '昨日',
+      );
+    });
+
+    test('月が違えば、同じ日でも月日で書く', () {
+      expect(formatRelativeDay(startedAt, DateTime(2026, 12, 5)), '11月5日');
+    });
+
+    test('年が違えば、同じ月日でも月日で書く', () {
+      expect(formatRelativeDay(startedAt, DateTime(2027, 11, 5)), '11月5日');
+    });
+  });
+}

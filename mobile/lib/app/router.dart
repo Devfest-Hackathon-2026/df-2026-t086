@@ -1,0 +1,298 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:kazokuai/app/loading_screen.dart';
+import 'package:kazokuai/data/auth_repository.dart';
+import 'package:kazokuai/data/watched_person_repository.dart';
+import 'package:kazokuai/features/account/document_screen.dart';
+import 'package:kazokuai/features/account/login_screen.dart';
+import 'package:kazokuai/features/account/password_reset_screen.dart';
+import 'package:kazokuai/features/account/register_screen.dart';
+import 'package:kazokuai/features/account/sample_documents.dart';
+import 'package:kazokuai/features/account/welcome_screen.dart';
+import 'package:kazokuai/features/ask/ask_screen.dart';
+import 'package:kazokuai/features/booking/booking_edit_screen.dart';
+import 'package:kazokuai/features/booking/booking_screen.dart';
+import 'package:kazokuai/features/booking/retry_rule_screen.dart';
+import 'package:kazokuai/features/calls/call_detail_screen.dart';
+import 'package:kazokuai/features/calls/calls_screen.dart';
+import 'package:kazokuai/features/home/home_screen.dart';
+import 'package:kazokuai/features/settings/account_info_screen.dart';
+import 'package:kazokuai/features/settings/logout_screen.dart';
+import 'package:kazokuai/features/settings/settings_screen.dart';
+import 'package:kazokuai/features/setup/watched_person_name_screen.dart';
+import 'package:kazokuai/features/sync/sync_screen.dart';
+import 'package:kazokuai/features/tutorial/tutorial_shell.dart';
+
+abstract final class AppRoutes {
+  static const welcome = 'welcome';
+  static const login = 'login';
+  static const passwordReset = 'passwordReset';
+  static const register = 'register';
+  static const terms = 'terms';
+  static const privacy = 'privacy';
+  static const loading = 'loading';
+  static const watchedPersonName = 'watchedPersonName';
+  static const sync = 'sync';
+  static const syncDone = 'syncDone';
+  static const home = 'home';
+  static const calls = 'calls';
+  static const booking = 'booking';
+  static const ask = 'ask';
+  static const callDetail = 'callDetail';
+  static const callDetailById = 'callDetailById';
+  static const retryRule = 'retryRule';
+  static const bookingEdit = 'bookingEdit';
+  static const settings = 'settings';
+  static const accountInfo = 'accountInfo';
+  static const logout = 'logout';
+  static const settingsSync = 'settingsSync';
+  static const settingsSyncDone = 'settingsSyncDone';
+}
+
+// ログインする前に開ける画面は、すべてこの下に置く
+const _signedOutPath = '/welcome';
+// ログインした家族に見守る方がいるかを読み終えるまでと、読めなかったときに開く
+const _loadingPath = '/loading';
+const _watchedPersonNamePath = '/setup/name';
+const _syncPath = '/sync';
+const _syncDonePath = '/sync/done';
+
+GoRouter createAppRouter({
+  required AuthRepository auth,
+  required WatchedPersonRepository watchedPerson,
+}) {
+  final rootNavigatorKey = GlobalKey<NavigatorState>();
+
+  // push で開いた画面も URL に出す。既定では URL が元の画面のままなので、
+  // 読み直すとホームに戻り、開いていた画面を失う。
+  GoRouter.optionURLReflectsImperativeAPIs = true;
+
+  return GoRouter(
+    navigatorKey: rootNavigatorKey,
+    initialLocation: '/home',
+    // ログインしていない家族は L1 に、見守る方がいない家族は L3 に、
+    // 名前のない見守る方の家族は L6 に、それ以外は開いている道に残す
+    refreshListenable: Listenable.merge([auth.signedIn, watchedPerson.status]),
+    redirect: (context, state) {
+      final location = state.matchedLocation;
+      if (!auth.signedIn.value) {
+        // ログアウトすると L1 に戻す。見守る方が続いて unknown になっても、
+        // この分岐が先なので、読み込み中の画面には進まない
+        return location.startsWith(_signedOutPath) ? null : _signedOutPath;
+      }
+      switch (watchedPerson.status.value) {
+        case WatchedPersonStatus.unknown:
+        case WatchedPersonStatus.unreadable:
+          // 読み終えるまで道を変えない。読み込み中はアプリが上に出す。
+          // /loading へ付け替えると、読み終えたあとホームへ戻り、読み直した画面を失う
+          return null;
+        case WatchedPersonStatus.none:
+          // 見守る方がいないあいだは L3 だけ。完了の画面は、同期で状態が変わってから開く
+          return location == _syncPath ? null : _syncPath;
+        case WatchedPersonStatus.unnamed:
+          // 認証コードを受け付けた直後は、名前の知らせより先に完了の画面を出す
+          if (location == _watchedPersonNamePath || location == _syncDonePath) {
+            return null;
+          }
+          return _watchedPersonNamePath;
+        case WatchedPersonStatus.registered:
+          // ログイン前の画面と名前の入力からはホームへ。
+          // 設定から開いた同期の画面は、ここに残す
+          final isBeforeHome =
+              location.startsWith(_signedOutPath) ||
+              location == _loadingPath ||
+              location == _watchedPersonNamePath;
+          return isBeforeHome ? '/home' : null;
+      }
+    },
+    routes: [
+      GoRoute(
+        name: AppRoutes.welcome,
+        path: _signedOutPath,
+        builder: (context, state) => const WelcomeScreen(),
+        routes: [
+          GoRoute(
+            name: AppRoutes.login,
+            path: 'login',
+            builder: (context, state) => const LoginScreen(),
+            routes: [
+              GoRoute(
+                name: AppRoutes.passwordReset,
+                path: 'reset',
+                builder: (context, state) => const PasswordResetScreen(),
+              ),
+            ],
+          ),
+          GoRoute(
+            name: AppRoutes.register,
+            path: 'register',
+            builder: (context, state) => const RegisterScreen(),
+            routes: [
+              GoRoute(
+                name: AppRoutes.terms,
+                path: 'terms',
+                builder: (context, state) =>
+                    const DocumentScreen(document: termsDocument),
+              ),
+              GoRoute(
+                name: AppRoutes.privacy,
+                path: 'privacy',
+                builder: (context, state) =>
+                    const DocumentScreen(document: privacyDocument),
+              ),
+            ],
+          ),
+        ],
+      ),
+      GoRoute(
+        name: AppRoutes.loading,
+        path: _loadingPath,
+        builder: (context, state) => const LoadingScreen(),
+      ),
+      GoRoute(
+        name: AppRoutes.watchedPersonName,
+        path: _watchedPersonNamePath,
+        builder: (context, state) => const WatchedPersonNameScreen(),
+      ),
+      GoRoute(
+        name: AppRoutes.sync,
+        path: _syncPath,
+        builder: (context, state) => const SyncScreen(),
+        routes: [
+          GoRoute(
+            name: AppRoutes.syncDone,
+            path: 'done',
+            builder: (context, state) => const SyncDoneScreen(),
+          ),
+        ],
+      ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            TutorialShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: AppRoutes.home,
+                path: '/home',
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: AppRoutes.calls,
+                path: '/calls',
+                builder: (context, state) => const CallsScreen(),
+                routes: [
+                  GoRoute(
+                    name: AppRoutes.callDetail,
+                    path: 'detail',
+                    builder: (context, state) => const CallDetailScreen(),
+                  ),
+                  // 見本の子にすると、戻る先が見本の詳細になる
+                  GoRoute(
+                    name: AppRoutes.callDetailById,
+                    path: 'detail/:callId',
+                    builder: (context, state) => CallDetailScreen(
+                      callId: state.pathParameters['callId'],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: AppRoutes.booking,
+                path: '/booking',
+                builder: (context, state) => const BookingScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      GoRoute(
+        name: AppRoutes.ask,
+        path: '/ask',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const AskScreen(),
+      ),
+      GoRoute(
+        name: AppRoutes.settings,
+        path: '/settings',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const SettingsScreen(),
+        routes: [
+          GoRoute(
+            name: AppRoutes.accountInfo,
+            path: 'account',
+            builder: (context, state) => const AccountInfoScreen(),
+            routes: [
+              GoRoute(
+                name: AppRoutes.logout,
+                path: 'logout',
+                builder: (context, state) => const LogoutScreen(),
+              ),
+            ],
+          ),
+          // 設定から開く同期。新規登録の /sync とは、もどる先が違う
+          GoRoute(
+            name: AppRoutes.settingsSync,
+            path: 'sync',
+            builder: (context, state) => const SyncScreen(fromSettings: true),
+            routes: [
+              GoRoute(
+                name: AppRoutes.settingsSyncDone,
+                path: 'done',
+                builder: (context, state) =>
+                    const SyncDoneScreen(fromSettings: true),
+              ),
+            ],
+          ),
+        ],
+      ),
+      GoRoute(
+        name: AppRoutes.bookingEdit,
+        path: '/booking/edit/:id',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) =>
+            BookingEditRoute(id: state.pathParameters['id'] ?? ''),
+      ),
+      GoRoute(
+        name: AppRoutes.retryRule,
+        path: '/retry-rule',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const RetryRuleScreen(),
+      ),
+    ],
+  );
+}
+
+// 読み直すと、押し開いた画面の下には何もない。「もどる」はそのとき、
+// ふだん開く元の画面へ移る。下があるときは、今までどおりそこへ戻る。
+// 元の画面は上のルートを読む。いくつかの場所から開く画面は、属するタブ。
+void popOrGoToParent(BuildContext context) {
+  final routeName = GoRouterState.of(context).name;
+  Navigator.of(context).maybePop().then((didPop) {
+    if (didPop || !context.mounted) return;
+    final parent = _screenParent(routeName);
+    if (parent != null) context.goNamed(parent);
+  });
+}
+
+// 01 と設定はホームからも開く。属するタブはホーム。
+// アカウント情報と、設定から開いた同期は、設定の上に開く。ログアウトの確認はアカウント情報の上に開く。
+// 予約の編集とかけなおしのルールは、予約電話の上に開く。
+String? _screenParent(String? routeName) {
+  return switch (routeName) {
+    AppRoutes.ask || AppRoutes.settings => AppRoutes.home,
+    AppRoutes.accountInfo || AppRoutes.settingsSync => AppRoutes.settings,
+    AppRoutes.logout => AppRoutes.accountInfo,
+    AppRoutes.bookingEdit || AppRoutes.retryRule => AppRoutes.booking,
+    _ => null,
+  };
+}

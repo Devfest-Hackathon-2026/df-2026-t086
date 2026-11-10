@@ -1,0 +1,119 @@
+# mise のタスク。mise.toml の [task_config] includes から読み込む。
+# ツールの版と分けておくと、タスクを変えても CI の mise のキャッシュが外れない
+
+[check]
+description = "PR を出す前に通すチェック。CI でも同じものを動かす"
+depends = ["check:mobile", "check:scripts", "check:go", "check:rules", "check:infra", "check:actions"]
+
+["check:mobile"]
+description = "Flutter のアプリのフォーマット、静的解析、テスト、Web のビルド"
+dir = "{{config_root}}/mobile"
+run = [
+  "dart format --output=none --set-exit-if-changed lib test",
+  "flutter analyze",
+  "flutter test",
+  "flutter build web",
+]
+
+["check:go"]
+description = "Go のデバイスとバックエンドのフォーマット、静的解析、テスト。テストは Firebase のエミュレーターの中で動かす"
+dir = "{{config_root}}"
+run = [
+  'test -z "$(gofmt -l backend device internal demo | tee /dev/stderr)"',
+  "go vet ./...",
+  # テストは毎回新しいエミュレーターを使うので、前の結果を使い回さない
+  "scripts/emulators_exec.sh 'go test -count=1 ./...'",
+]
+
+["check:rules"]
+description = "Firestore のセキュリティルールのテスト。Firestore のエミュレーターに対して動かす"
+dir = "{{config_root}}"
+run = [
+  "npm ci --prefix firebase --no-audit --no-fund --silent",
+  "scripts/emulators_exec.sh 'npm --prefix firebase test'",
+]
+
+["check:scripts"]
+description = "scripts/ のテスト"
+run = "python3 -I -m unittest discover -s {{config_root}}/scripts -p '*_test.py'"
+
+["check:infra"]
+description = "Terraform の fmt と validate。リモートの状態は使わない"
+dir = "{{config_root}}"
+run = [
+  "terraform fmt -check -recursive infra",
+  "terraform -chdir=infra init -backend=false -input=false -lockfile=readonly",
+  "terraform -chdir=infra validate",
+]
+
+["check:actions"]
+description = "GitHub Actions のワークフローを actionlint で確かめる"
+dir = "{{config_root}}"
+run = "actionlint"
+
+["device:install"]
+description = "電話機の実行ファイルと systemd のユニットを入れる。引数に linux/arm64 の実行ファイルを渡すとそのまま入れ、渡さないとこの機械の上で cgo を有効にしてビルドする。Pi では Flutter などを入れないよう mise run --skip-tools device:install にする"
+dir = "{{config_root}}"
+run = "bash scripts/device_install.sh"
+
+["infra:plan"]
+description = "本番のインフラの plan。例: mise run infra:plan -- --project=ID --billing-account=ID --image=IMAGE --state-bucket=BUCKET"
+dir = "{{config_root}}"
+run = "infra/run.sh plan"
+
+["infra:apply"]
+description = "本番のインフラの apply。確認のプロンプトが出る。--bootstrap は Cloud Run を作らない。--allow-replace は、この 1 回だけ削除の保護を外す。例: mise run infra:apply -- --project=ID --billing-account=ID --image=IMAGE --state-bucket=BUCKET"
+dir = "{{config_root}}"
+run = "infra/run.sh apply"
+
+["infra:untaint"]
+description = "状態に残った Cloud Run の tainted を外す。プロジェクトは引数で渡す。例: mise run infra:untaint -- --project=ID --state-bucket=BUCKET"
+dir = "{{config_root}}"
+run = "infra/run.sh untaint"
+
+["deploy:backend"]
+description = "バックエンドのイメージを linux/amd64 で作り、Artifact Registry に上げ、gcloud run deploy で新しいリビジョンにする。例: mise run deploy:backend -- --project=ID"
+dir = "{{config_root}}"
+run = "scripts/deploy_backend.sh"
+
+["deploy:web"]
+description = "本番向けの Web 版をビルドし、firebase.json の site へ公開する。設定は Terraform の output か Firebase の引数。例: mise run deploy:web -- --project=ID --state-bucket=BUCKET"
+dir = "{{config_root}}"
+run = "scripts/deploy_web.sh"
+
+["demo:seed"]
+description = "審査員のアカウントと、田中 ハナの 1 週間の電話と見本の予約を作り直す。見本の予約は実行した日の翌日以降で、タスクは作らない。JUDGE_EMAIL と JUDGE_PASSWORD を環境に置く。例: mise run demo:seed -- --project=ID"
+dir = "{{config_root}}"
+run = "go run ./demo/seed"
+
+[backend]
+description = "バックエンドを手元で起動する。0.0.0.0:8080 で待ち、demo-kazokuai のエミュレーターと開発用の合言葉を使う。GEMINI_API_KEY が要る。先に emulators を起動しておく。本番は GOOGLE_CLOUD_PROJECT と PHONE_SECRET を入れる"
+dir = "{{config_root}}"
+# firebase/firebase.json のポートと合わせる。プロジェクトは明示し、gcloud の既定には頼らない
+env = { FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099", FIRESTORE_EMULATOR_HOST = "127.0.0.1:8081", GOOGLE_CLOUD_PROJECT = "demo-kazokuai" }
+run = "go run ./backend"
+
+[device]
+description = "Mac で電話機を起動する。合言葉は PHONE_SECRET、未設定なら開発用を使う。先に backend を起動しておく。電話機は ID と鍵でつながり、同期はアプリから行う。Cloud Run のサービス kazokuai へは --backend https://… を付ける（https は wss になる）"
+dir = "{{config_root}}"
+run = "go run ./device"
+
+["spoken:clips"]
+description = "同期で受話器が話す音声を Gemini で作り直す。GEMINI_API_KEY が要る。できた WAV は device/spoken/clips に書き、コミットする"
+dir = "{{config_root}}"
+run = "go run ./device/spoken/cmd/generate"
+
+[emulators]
+description = "Firebase の Auth と Firestore のエミュレーターを起動する。エミュレーターの画面は http://localhost:4000"
+dir = "{{config_root}}/firebase"
+# Hosting は本番の Web 版用。ここは demo-kazokuai の Auth と Firestore だけを起動する
+run = "firebase emulators:start --project demo-kazokuai --only auth,firestore"
+
+[translate]
+description = "英語の Markdown を plamo-translate で日本語に訳す。例: mise run translate en.md ja.md"
+run = "python3 -I {{config_root}}/scripts/plamo_translate.py"
+
+[launcher-icons]
+description = "元の画像から iOS、Android、Web のホーム画面のアイコンを作り直す"
+dir = "{{config_root}}/mobile"
+run = "dart run tool/launcher_icons.dart"

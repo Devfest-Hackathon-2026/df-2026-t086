@@ -1,0 +1,13 @@
+# git gtr new で作ったワークツリーの中で動かすコマンド。
+# 初めて使う前と、ここを変えたあとに、人が git gtr trust で承認する。
+[hooks]
+	postCreate = mise trust
+	postCreate = codegraph init
+
+# git gtr new で、メインのリポジトリの .env を新しいワークツリーに写す
+[copy]
+	include = .env
+
+# git gtr clean --merged で PR を調べる先。リモートが SSH の別名なので、URL からは判定できない
+[defaults]
+	provider = github

@@ -1,0 +1,20 @@
+[Unit]
+Description=かぞくAIの電話機
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+# インストールが User= と XDG_RUNTIME_DIR を、入れた人のユーザーで書き足す。
+Type=simple
+# /var/lib/kazokuai を作り、ID と鍵のファイルをそこに置く。
+StateDirectory=kazokuai
+EnvironmentFile=/etc/kazokuai/device.env
+# 電話機は自分の ID と鍵でつなぐ。同期はアプリから行う。
+ExecStart=/usr/local/bin/kazokuai-device --backend ${KAZOKUAI_BACKEND}
+Restart=on-failure
+RestartSec=5
+StartLimitIntervalSec=0
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

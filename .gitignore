@@ -1,34 +1,39 @@
-# 秘密情報（コミットしない）
-.env
-.env.*
-!.env.example
-.dev.vars
-.dev.vars.*
-!.dev.vars.example
-*.pem
-*.key
-*.p12
-service-account*.json
-credentials*.json
-google-services.json
-GoogleService-Info.plist
+# codegraph の索引。ワークツリーごとに codegraph init で作る
+.codegraph/
 
-# 依存関係とビルドの成果物
-node_modules/
-dist/
-build/
-out/
-.next/
-.wrangler/
+# scripts/ のテストを動かすと Python が作る
 __pycache__/
-*.pyc
-.venv/
-venv/
 
-# OS とエディタ
-.DS_Store
-Thumbs.db
-.idea/
-.vscode/*
-!.vscode/extensions.json
-*.log
+# 環境変数。.env.example を写して作る。API キーが入るのでコミットしない
+.env
+
+# bookworm のビルドがリポジトリのルートに出す実行ファイルと sha256。Pi へ送るだけでコミットしない
+/kazokuai-device
+/kazokuai-device.sha256
+
+# firebase/ でエミュレーターを起動すると firebase-tools が作る
+*-debug.log
+
+# deploy:web が Flutter のビルドを firebase/ の中へ写す先。CLI はプロジェクトの外を公開できない
+firebase/hosting/
+
+# firebase/ のルールのテストに使う。npm ci で入れる
+node_modules/
+
+# Terraform の作業ディレクトリと状態。ロックファイル (.terraform.lock.hcl) はコミットする
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
+# 変数の値。プロジェクト ID やイメージが入るのでコミットしない
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
